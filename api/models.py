@@ -1,4 +1,5 @@
 from django.db import models
+# from django.contrib.postgres.fields import ArrayField
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
@@ -55,3 +56,10 @@ class Record(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     speed = models.FloatField(default=0.0)
     accuracy = models.FloatField(default=0.0)
+
+class Quote(models.Model):
+
+    source = models.CharField(max_length=50)
+    quotee = models.CharField(max_length=150)
+    text = models.TextField()
+    tags = models.TextField()
