@@ -8,14 +8,14 @@ from .models import Typer, Quote, Record
 class TyperSerializer(serializers.ModelSerializer):
     class Meta:
         model = Typer
-        fields = ('username',)
+        fields = ('username', 'email', 'password', 'avg_speed', "avg_accuracy")
 
 class CreateTyperSerializer(serializers.ModelSerializer):
     username = serializers.CharField(validators=[])
 
     class Meta:
         model = Typer
-        fields = ('username', 'password', 'email')
+        fields = ('username', 'email', 'password')
 
 class StatSerializer(serializers.ModelSerializer):
     class Meta:
