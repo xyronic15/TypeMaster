@@ -17,6 +17,11 @@ class CreateTyperSerializer(serializers.ModelSerializer):
         model = Typer
         fields = ('username', 'email', 'password')
 
+class LoginTyperSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Typer
+        fields = ('email', 'password')
+
 class StatSerializer(serializers.ModelSerializer):
     class Meta:
         model = Typer
