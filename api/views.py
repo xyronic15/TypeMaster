@@ -1,13 +1,13 @@
 from turtle import update
 from django.shortcuts import render
-from api.models import Typer
-from api.serializers import CreateTyperSerializer, LoginTyperSerializer, StatSerializer, TyperSerializer
+from api.models import Record, Typer
+from api.serializers import CreateTyperSerializer, LoginTyperSerializer, RecordSerializer, StatSerializer, TyperSerializer
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from django.db.models import Q
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 
 # Create your views here.
 
@@ -62,3 +62,93 @@ class LoginTyperView(APIView):
         except get_user_model().DoesNotExist:
             return Response({'msg': 'Incorrect email or password'}, status=status.HTTP_401_UNAUTHORIZED)
 
+# API view to logout user
+class LogoutTyperView(APIView):
+
+    def post(self, request, format=None):
+        if request.user.is_authenticated:
+            print(request.user)
+            logout(request)
+            return Response({'msg': 'User successfully logged out'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'Bad Request': 'No user logged in'}, status=status.HTTP_400_BAD_REQUEST)
+
+# API view to get the current typer if logged in
+class GetCurrentTyperView(APIView):
+
+    def get(self, request, format=None):
+        if request.user.is_authenticated:
+            print(request.user)
+            return Response({'current_typer': request.user.username}, status=status.HTTP_200_OK)
+        else:
+            return Response({'current_typer': ''}, status=status.HTTP_200_OK)
+
+# API view to retrieve user's current stats
+class GetCurrentStatsView(APIView):
+    serializer_class = StatSerializer
+
+    def get(self, request, format=None):
+        if request.user.is_authenticated:
+            typer = request.user
+            print(typer)
+            return Response(self.serializer_class(typer).data, status=status.HTTP_200_OK)
+        else:
+            return Response({'msg': 'No user logged in'}, status=status.HTTP_200_OK)
+
+# API view to add a new record
+class NewRecordView(APIView):
+    serializer_class = RecordSerializer
+
+    def post(self, request, format=None):
+        if request.user.is_authenticated:
+            typer = request.user
+            speed = request.data.get('speed')
+            accuracy = request.data.get('accuracy')
+
+            record = Record(typer=typer, speed=speed, accuracy=accuracy)
+            record.save()
+
+            serializer = self.serializer_class(record)
+
+            typer_serializer = update_typer_stats(typer.username)
+            print(typer_serializer.data)
+            if typer_serializer:
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                record.delete()
+                return Response({"Bad Request": 'User stats could not be updated'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        return Response({'msg': 'No user is logged in'}, status=status.HTTP_200_OK)
+        
+# API view to list all records unless user is logged in
+class GetAllRecords(generics.ListAPIView):
+    serializer_class = RecordSerializer
+
+    def get_queryset(self):
+
+        if self.request.user.is_authenticated:
+            query_set = Record.objects.filter(typer=self.request.user).order_by('-created_at')
+        else:
+            query_set = Record.objects.all().order_by('-created_at')
+
+        return query_set
+
+### Helper functions
+
+# function used to update the user's current stats
+def update_typer_stats(username):
+
+    typer = Typer.objects.get(username=username)
+    speeds = Record.objects.filter(typer=typer).order_by('-created_at').values_list('speed', flat=True)[:10]
+    accuracies = Record.objects.filter(typer=typer).order_by('-created_at').values_list('accuracy', flat=True)[:10]
+    avg_speed = sum(speeds) / len(speeds)
+    avg_accuracy = sum(accuracies) / len(accuracies)
+    print(avg_speed)
+    print(avg_accuracy)
+
+    Typer.objects.filter(username=username).update(avg_speed=avg_speed)
+    Typer.objects.filter(username=username).update(avg_accuracy=avg_accuracy)
+
+    serializer = StatSerializer(Typer.objects.get(username=username))
+    print(serializer.data)
+    return serializer
