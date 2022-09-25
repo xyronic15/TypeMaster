@@ -1,6 +1,6 @@
 from django.urls import path
 
-from api.views import CreateTyperView, GetAllRecords, GetCurrentStatsView, GetCurrentTyperView, ListTypersView, LoginTyperView, LogoutTyperView, NewRecordView
+from api.views import AddQuoteView, CreateTyperView, GetAllQuotesView, GetAllRecords, GetCurrentStatsView, GetCurrentTyperView, ListTypersView, LoginTyperView, LogoutTyperView, NewRecordView, RandomQuoteView
 
 urlpatterns = [
     path('typers', ListTypersView.as_view()),
@@ -10,5 +10,8 @@ urlpatterns = [
     path('get-typer', GetCurrentTyperView.as_view()),
     path('get-stats', GetCurrentStatsView.as_view()),
     path('new-record', NewRecordView.as_view()),
-    path('get-all', GetAllRecords.as_view()),
+    path('get-all-records', GetAllRecords.as_view()),
+    path('add-quote', AddQuoteView.as_view()),
+    path('get-all-quotes', GetAllQuotesView.as_view()),
+    path('random-quote', RandomQuoteView.as_view()),
 ]

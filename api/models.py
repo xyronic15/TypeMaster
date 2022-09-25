@@ -59,7 +59,7 @@ class Record(models.Model):
 
 class Quote(models.Model):
 
-    source = models.CharField(max_length=50)
+    text = models.TextField(blank=False)
     quotee = models.CharField(max_length=150)
-    text = models.TextField()
+    source = models.CharField(max_length=50)
     tags = models.TextField()

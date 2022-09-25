@@ -1,7 +1,8 @@
+import random
 from turtle import update
 from django.shortcuts import render
-from api.models import Record, Typer
-from api.serializers import CreateTyperSerializer, LoginTyperSerializer, RecordSerializer, StatSerializer, TyperSerializer
+from api.models import Quote, Record, Typer
+from api.serializers import CreateTyperSerializer, LoginTyperSerializer, QuoteSerializer, RecordSerializer, StatSerializer, TyperSerializer
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -132,6 +133,53 @@ class GetAllRecords(generics.ListAPIView):
             query_set = Record.objects.all().order_by('-created_at')
 
         return query_set
+
+# API view to add a quote
+class AddQuoteView(APIView):
+    serializer_class = QuoteSerializer
+
+    def post(self, request, format=None):
+        print(request.data)
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            text = serializer.data.get('text')
+            quotee = serializer.data.get('quotee')
+            source = serializer.data.get('source')
+            tags = serializer.data.get('tags')
+            query_set = Quote.objects.filter(text=text)
+            if query_set.exists():
+                quote = query_set[0]
+                quote.quotee = quotee if not quote.quotee else quote.quotee
+                quote.source = source if not quote.source else quote.source
+                quote.tags = tags if not quote.tags else quote.tags
+                quote.save(update_fields=['quotee', 'source', 'tags'])
+                return Response(QuoteSerializer(quote).data, status=status.HTTP_204_NO_CONTENT)
+            else:
+                quote = Quote(text=text, quotee=quotee, source=source, tags=tags)
+                quote.save()
+                return Response(QuoteSerializer(quote).data, status=status.HTTP_201_CREATED)
+        
+        return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
+
+# API view to get all the quotes
+class GetAllQuotesView(generics.ListAPIView):
+    queryset = Quote.objects.all()
+    serializer_class = QuoteSerializer
+
+# API view to get a random quote
+class RandomQuoteView(APIView):
+    serializer_class = QuoteSerializer
+
+    def get(self, request, format=None):
+        
+        quotes = list(Quote.objects.all())
+
+        quote = random.choice(quotes)
+
+        if quote:
+            return Response(QuoteSerializer(quote).data, status=status.HTTP_200_OK)
+        else:
+            return Response({"Bad Request": "Could not get quote"}, status=status.HTTP_404_NOT_FOUND)
 
 ### Helper functions
 
