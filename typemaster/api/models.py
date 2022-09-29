@@ -61,5 +61,5 @@ class Quote(models.Model):
 
     text = models.TextField(blank=False)
     quotee = models.CharField(max_length=150)
-    source = models.CharField(max_length=50)
+    source = models.CharField(max_length=150)
     tags = models.TextField()
