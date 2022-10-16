@@ -1,1 +1,4 @@
-export const TESTTXT = "TESTING"
+const TESTTXT = "TESTING";
+const API_URL = "http://127.0.0.1:8000/api"
+
+export { TESTTXT, API_URL };
