@@ -1,6 +1,8 @@
 from django.urls import path
-
-from api.views import AddQuoteView, CreateTyperView, GetAllQuotesView, GetAllRecords, GetCurrentStatsView, GetCurrentTyperView, ListTypersView, LoginTyperView, LogoutTyperView, NewRecordView, RandomQuoteView
+from api.views import AddQuoteView, CreateTyperView, GetAllQuotesView, GetAllRecords, GetCurrentStatsView, GetCurrentTyperView, ListTypersView, LoginTyperView, LogoutTyperView, NewRecordView, RandomQuoteView, MyTokenObtainPairView
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+)
 
 urlpatterns = [
     path('typers', ListTypersView.as_view()),
@@ -14,4 +16,6 @@ urlpatterns = [
     path('add-quote', AddQuoteView.as_view()),
     path('get-all-quotes', GetAllQuotesView.as_view()),
     path('random-quote', RandomQuoteView.as_view()),
+    path('token/', MyTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
