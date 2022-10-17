@@ -6,33 +6,35 @@ import React, { useEffect, useState } from "react";
 import { API_URL } from "./constants";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home, Test, HighScores, SignIn, SignUp } from "./pages";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
-  // const [curr_typer, setTyper] = useState("");
-
-  // useEffect(() => {
-  //   getCurrTyper();
-  // }, []);
-
-  // let getCurrTyper = async () => {
-  //   let url = API_URL + '/get-typer'
-  //   let res = await fetch(url)
-  //   let data = await res.json()
-  //   console.log(data)
-  //   setTyper(data.current_typer)
-  // };
-
   return (
-    <Router>
-      <NavbarComp />
+    // const [curr_typer, setTyper] = useState("");
 
-      <Routes>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/test" element={<Test />}></Route>
-        <Route path="/high-scores" element={<HighScores />}></Route>
-        <Route path="/sign-in" element={<SignIn />}></Route>
-        <Route path="/sign-up" element={<SignUp />}></Route>
-      </Routes>
+    // useEffect(() => {
+    //   getCurrTyper();
+    // }, []);
+
+    // let getCurrTyper = async () => {
+    //   let url = API_URL + '/get-typer'
+    //   let res = await fetch(url)
+    //   let data = await res.json()
+    //   console.log(data)
+    //   setTyper(data.current_typer)
+    // };
+    <Router>
+      <AuthProvider>
+        <NavbarComp />
+
+        <Routes>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/test" element={<Test />}></Route>
+          <Route path="/high-scores" element={<HighScores />}></Route>
+          <Route path="/sign-in" element={<SignIn />}></Route>
+          <Route path="/sign-up" element={<SignUp />}></Route>
+        </Routes>
+      </AuthProvider>
     </Router>
   );
 }
