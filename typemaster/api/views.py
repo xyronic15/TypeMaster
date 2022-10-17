@@ -1,16 +1,14 @@
 import random
-from turtle import update
-from django.shortcuts import render
 from api.models import Quote, Record, Typer
 from api.serializers import CreateTyperSerializer, LoginTyperSerializer, QuoteSerializer, RecordSerializer, StatSerializer, TyperSerializer
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
-from django.db.models import Q
 from django.contrib.auth import login, logout
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 
 # Create your views here.
 
@@ -88,6 +86,7 @@ class GetCurrentTyperView(APIView):
 
 # API view to retrieve user's current stats
 class GetCurrentStatsView(APIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = StatSerializer
 
     def get(self, request, format=None):
@@ -96,7 +95,7 @@ class GetCurrentStatsView(APIView):
             print(typer)
             return Response(self.serializer_class(typer).data, status=status.HTTP_200_OK)
         else:
-            return Response({'msg': 'No user logged in'}, status=status.HTTP_200_OK)
+            return Response({'msg': 'No user logged in'}, status=status.HTTP_403_FORBIDDEN)
 
 # API view to add a new record
 class NewRecordView(APIView):

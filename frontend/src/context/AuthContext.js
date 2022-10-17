@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
       ? jwt_decode(localStorage.getItem("authTokens"))
       : null
   );
-  let [loading, setLoading] = useState(null);
+  let [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -55,7 +55,7 @@ export function AuthProvider({ children }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ refresh: authTokens.refresh }),
+      body: JSON.stringify({ refresh: authTokens?.refresh }),
     });
 
     let data = await response.json();
@@ -68,6 +68,10 @@ export function AuthProvider({ children }) {
     } else {
       logout();
     }
+
+    if (loading) {
+      setLoading(false);
+    }
   };
 
   let logout = () => {
@@ -78,11 +82,15 @@ export function AuthProvider({ children }) {
 
   let contextData = {
     user: user,
+    authTokens: authTokens,
     loginUser: loginUser,
     logout: logout,
   };
 
   useEffect(() => {
+    if (loading) {
+      updateToken();
+    }
     let refreshTime = 1000 * 60 * 4;
     let interval = setInterval(() => {
       if (authTokens) {
@@ -93,6 +101,8 @@ export function AuthProvider({ children }) {
   }, [authTokens, loading]);
 
   return (
-    <AuthContext.Provider value={contextData}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={contextData}>
+      {loading ? null : children}
+    </AuthContext.Provider>
   );
 }
