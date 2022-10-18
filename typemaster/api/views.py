@@ -8,17 +8,19 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import login, logout
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, AllowAny
 
 # Create your views here.
 
 # API view that list all users
 class ListTypersView(generics.ListAPIView):
+    permission_classes=[AllowAny]
     queryset = Typer.objects.all()
     serializer_class = TyperSerializer
 
 # API view used to create an account/typer
 class CreateTyperView(APIView):
+    permission_classes = [AllowAny]
     serializer_class = CreateTyperSerializer
 
     def post(self, request, format=None):
@@ -42,47 +44,47 @@ class CreateTyperView(APIView):
         return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
     
 # API View to login user
-class LoginTyperView(APIView):
-    serializer_class = LoginTyperSerializer
+# class LoginTyperView(APIView):
+#     serializer_class = LoginTyperSerializer
 
-    def post(self, request, format=None):
-        # if not self.request.session.exists(self.request.session.session_key):
-        #     self.request.session.create()
+#     def post(self, request, format=None):
+#         # if not self.request.session.exists(self.request.session.session_key):
+#         #     self.request.session.create()
 
-        print(request.data)
-        email = request.data.get('email')
-        password = request.data.get('password')
+#         print(request.data)
+#         email = request.data.get('email')
+#         password = request.data.get('password')
 
-        try:
-            typer = get_user_model().objects.get(email=email)
-            if typer.check_password(password):
-                login(request, typer)
-                return Response({'msg': 'Logged in successfully'}, status=status.HTTP_200_OK)
-            else:
-                return Response({'msg': 'Incorrect email or password'}, status=status.HTTP_401_UNAUTHORIZED)
-        except get_user_model().DoesNotExist:
-            return Response({'msg': 'Incorrect email or password'}, status=status.HTTP_401_UNAUTHORIZED)
+#         try:
+#             typer = get_user_model().objects.get(email=email)
+#             if typer.check_password(password):
+#                 login(request, typer)
+#                 return Response({'msg': 'Logged in successfully'}, status=status.HTTP_200_OK)
+#             else:
+#                 return Response({'msg': 'Incorrect email or password'}, status=status.HTTP_401_UNAUTHORIZED)
+#         except get_user_model().DoesNotExist:
+#             return Response({'msg': 'Incorrect email or password'}, status=status.HTTP_401_UNAUTHORIZED)
 
-# API view to logout user
-class LogoutTyperView(APIView):
+# # API view to logout user
+# class LogoutTyperView(APIView):
 
-    def post(self, request, format=None):
-        if request.user.is_authenticated:
-            print(request.user)
-            logout(request)
-            return Response({'msg': 'User successfully logged out'}, status=status.HTTP_200_OK)
-        else:
-            return Response({'Bad Request': 'No user logged in'}, status=status.HTTP_400_BAD_REQUEST)
+#     def post(self, request, format=None):
+#         if request.user.is_authenticated:
+#             print(request.user)
+#             logout(request)
+#             return Response({'msg': 'User successfully logged out'}, status=status.HTTP_200_OK)
+#         else:
+#             return Response({'Bad Request': 'No user logged in'}, status=status.HTTP_400_BAD_REQUEST)
 
 # API view to get the current typer if logged in
-class GetCurrentTyperView(APIView):
+# class GetCurrentTyperView(APIView):
 
-    def get(self, request, format=None):
-        if request.user.is_authenticated:
-            print(request.user)
-            return Response({'current_typer': request.user.username}, status=status.HTTP_200_OK)
-        else:
-            return Response({'current_typer': ''}, status=status.HTTP_200_OK)
+#     def get(self, request, format=None):
+#         if request.user.is_authenticated:
+#             print(request.user)
+#             return Response({'current_typer': request.user.username}, status=status.HTTP_200_OK)
+#         else:
+#             return Response({'current_typer': ''}, status=status.HTTP_200_OK)
 
 # API view to retrieve user's current stats
 class GetCurrentStatsView(APIView):
@@ -99,6 +101,7 @@ class GetCurrentStatsView(APIView):
 
 # API view to add a new record
 class NewRecordView(APIView):
+    permission_classes = [IsAuthenticated]
     serializer_class = RecordSerializer
 
     def post(self, request, format=None):
@@ -124,6 +127,7 @@ class NewRecordView(APIView):
         
 # API view to list all records unless user is logged in
 class GetAllRecords(generics.ListAPIView):
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     serializer_class = RecordSerializer
 
     def get_queryset(self):
@@ -131,12 +135,14 @@ class GetAllRecords(generics.ListAPIView):
         if self.request.user.is_authenticated:
             query_set = Record.objects.filter(typer=self.request.user).order_by('-created_at')
         else:
+            # TBC
             query_set = Record.objects.all().order_by('-created_at')
 
         return query_set
 
 # API view to add a quote
 class AddQuoteView(APIView):
+    permission_classes = [AllowAny]
     serializer_class = QuoteSerializer
 
     def post(self, request, format=None):
@@ -164,11 +170,13 @@ class AddQuoteView(APIView):
 
 # API view to get all the quotes
 class GetAllQuotesView(generics.ListAPIView):
+    permission_classes = [AllowAny]
     queryset = Quote.objects.all()
     serializer_class = QuoteSerializer
 
 # API view to get a random quote
 class RandomQuoteView(APIView):
+    permission_classes = [AllowAny]
     serializer_class = QuoteSerializer
 
     def get(self, request, format=None):
