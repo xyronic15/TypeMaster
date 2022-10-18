@@ -43,7 +43,53 @@ export function AuthProvider({ children }) {
       localStorage.setItem("authTokens", JSON.stringify(data));
       navigate("/");
     } else {
-      alert("Bad Request");
+      alert("Bad Request: Login Failed");
+    }
+  };
+
+  //   TBC
+  let addUser = async (e) => {
+    e.preventDefault();
+    let url = API_URL + "/create-typer";
+    let response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: e.target.email.value,
+        password: e.target.password.value,
+        username: e.target.username.value,
+      }),
+    });
+
+    let data = await response.json();
+
+    if (response.status === 201) {
+      let url = API_URL + "/token/";
+      let response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: e.target.email.value,
+          password: e.target.password.value,
+        }),
+      });
+
+      let data = await response.json();
+
+      if (response.status === 200) {
+        setAuthTokens(data);
+        setUser(jwt_decode(data.access));
+        localStorage.setItem("authTokens", JSON.stringify(data));
+        navigate("/");
+      } else {
+        alert("Bad Request: Login Failed");
+      }
+    } else {
+      alert("Bad Request: Registration Failed");
     }
   };
 
@@ -78,6 +124,7 @@ export function AuthProvider({ children }) {
     setAuthTokens(null);
     setUser(null);
     localStorage.removeItem("authTokens");
+    // navigate("/");
   };
 
   let contextData = {
@@ -85,6 +132,7 @@ export function AuthProvider({ children }) {
     authTokens: authTokens,
     loginUser: loginUser,
     logout: logout,
+    addUser: addUser,
   };
 
   useEffect(() => {
