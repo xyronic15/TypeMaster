@@ -1,3 +1,4 @@
 import NavbarComp from "./NavbarComp";
+import RecordsTable from "./RecordsTable";
 
-export { NavbarComp }
+export { NavbarComp, RecordsTable };

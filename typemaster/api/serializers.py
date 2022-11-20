@@ -37,6 +37,7 @@ class QuoteSerializer(serializers.ModelSerializer):
 # Record Serializers
 
 class RecordSerializer(serializers.ModelSerializer):
+    typer = serializers.CharField()
     class Meta:
         model = Record
         fields = ('typer', 'created_at', 'speed', 'accuracy')

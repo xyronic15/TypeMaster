@@ -44,37 +44,39 @@ class CreateTyperView(APIView):
         return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
     
 # API View to login user
-# class LoginTyperView(APIView):
-#     serializer_class = LoginTyperSerializer
+class LoginTyperView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = LoginTyperSerializer
 
-#     def post(self, request, format=None):
-#         # if not self.request.session.exists(self.request.session.session_key):
-#         #     self.request.session.create()
+    def post(self, request, format=None):
+        # if not self.request.session.exists(self.request.session.session_key):
+        #     self.request.session.create()
 
-#         print(request.data)
-#         email = request.data.get('email')
-#         password = request.data.get('password')
+        print(request.data)
+        email = request.data.get('email')
+        password = request.data.get('password')
 
-#         try:
-#             typer = get_user_model().objects.get(email=email)
-#             if typer.check_password(password):
-#                 login(request, typer)
-#                 return Response({'msg': 'Logged in successfully'}, status=status.HTTP_200_OK)
-#             else:
-#                 return Response({'msg': 'Incorrect email or password'}, status=status.HTTP_401_UNAUTHORIZED)
-#         except get_user_model().DoesNotExist:
-#             return Response({'msg': 'Incorrect email or password'}, status=status.HTTP_401_UNAUTHORIZED)
+        try:
+            typer = get_user_model().objects.get(email=email)
+            if typer.check_password(password):
+                login(request, typer)
+                return Response({'msg': 'Logged in successfully'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'msg': 'Incorrect email or password'}, status=status.HTTP_401_UNAUTHORIZED)
+        except get_user_model().DoesNotExist:
+            return Response({'msg': 'Incorrect email or password'}, status=status.HTTP_401_UNAUTHORIZED)
 
-# # API view to logout user
-# class LogoutTyperView(APIView):
+# API view to logout user
+class LogoutTyperView(APIView):
+    permission_classes = [IsAuthenticated]
 
-#     def post(self, request, format=None):
-#         if request.user.is_authenticated:
-#             print(request.user)
-#             logout(request)
-#             return Response({'msg': 'User successfully logged out'}, status=status.HTTP_200_OK)
-#         else:
-#             return Response({'Bad Request': 'No user logged in'}, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, format=None):
+        if request.user.is_authenticated:
+            print(request.user)
+            logout(request)
+            return Response({'msg': 'User successfully logged out'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'Bad Request': 'No user logged in'}, status=status.HTTP_400_BAD_REQUEST)
 
 # API view to get the current typer if logged in
 # class GetCurrentTyperView(APIView):
@@ -135,8 +137,7 @@ class GetAllRecords(generics.ListAPIView):
         if self.request.user.is_authenticated:
             query_set = Record.objects.filter(typer=self.request.user).order_by('-created_at')
         else:
-            # TBC
-            query_set = Record.objects.all().order_by('-created_at')
+            query_set = Record.objects.raw("SELECT *, MAX(speed) FROM api_record GROUP BY typer_id")
 
         return query_set
 

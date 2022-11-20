@@ -6,7 +6,7 @@ export default function NavbarComp(props) {
   let { user, logout } = useContext(AuthContext);
   return (
     <div>
-      <Navbar bg="dark" variant="dark" expand="lg">
+      <Navbar bg="dark" variant="dark" expand="lg" className="mb-4">
         <Container>
           <Navbar.Brand href="/">TypeMaster</Navbar.Brand>
 
@@ -15,6 +15,7 @@ export default function NavbarComp(props) {
             <Nav className="me-auto">
               <Nav.Link href="/test">Take a Test</Nav.Link>
               <Nav.Link href="/high-scores">High Scores</Nav.Link>
+              {user ? (<Nav.Link href="/records">Your Records</Nav.Link>) : null}
             </Nav>
             {user ? (
               // TBC

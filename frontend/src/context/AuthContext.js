@@ -47,9 +47,8 @@ export function AuthProvider({ children }) {
     }
   };
 
-  //   TBC
-  let addUser = async (e) => {
-    e.preventDefault();
+  let addUser = async (values) => {
+    // e.preventDefault();
     let url = API_URL + "/create-typer";
     let response = await fetch(url, {
       method: "POST",
@@ -57,9 +56,9 @@ export function AuthProvider({ children }) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        email: e.target.email.value,
-        password: e.target.password.value,
-        username: e.target.username.value,
+        email: values.email,
+        password: values.password,
+        username: values.username,
       }),
     });
 
@@ -73,8 +72,8 @@ export function AuthProvider({ children }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          email: e.target.email.value,
-          password: e.target.password.value,
+          email: values.email,
+          password: values.password,
         }),
       });
 
@@ -110,7 +109,6 @@ export function AuthProvider({ children }) {
       setAuthTokens(data);
       setUser(jwt_decode(data.access));
       localStorage.setItem("authTokens", JSON.stringify(data));
-      navigate("/");
     } else {
       logout();
     }
