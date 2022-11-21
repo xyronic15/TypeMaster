@@ -9,21 +9,9 @@ import { Home, Test, HighScores, SignIn, SignUp, Records } from "./pages";
 import { PrivateRoute } from "./utils";
 import { AuthProvider } from "./context/AuthContext";
 
+// final app
 function App() {
   return (
-    // const [curr_typer, setTyper] = useState("");
-
-    // useEffect(() => {
-    //   getCurrTyper();
-    // }, []);
-
-    // let getCurrTyper = async () => {
-    //   let url = API_URL + '/get-typer'
-    //   let res = await fetch(url)
-    //   let data = await res.json()
-    //   console.log(data)
-    //   setTyper(data.current_typer)
-    // };
     <Router>
       <AuthProvider>
         <NavbarComp />

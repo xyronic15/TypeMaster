@@ -3,15 +3,19 @@ import { API_URL } from "../constants";
 import jwt_decode from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
+// exported context needed for JWT authentication
 const AuthContext = createContext();
 export default AuthContext;
 
 export function AuthProvider({ children }) {
+
+  // Tokens saved into cache needed for access, authentication and refreshing
   let [authTokens, setAuthTokens] = useState(() =>
     localStorage.getItem("authTokens")
       ? JSON.parse(localStorage.getItem("authTokens"))
       : null
   );
+  // Decoded JWT token containing username information
   let [user, setUser] = useState(() =>
     localStorage.getItem("authTokens")
       ? jwt_decode(localStorage.getItem("authTokens"))
@@ -21,8 +25,11 @@ export function AuthProvider({ children }) {
 
   const navigate = useNavigate();
 
+  // function to login user given login event
   let loginUser = async (e) => {
     e.preventDefault();
+
+    // use token url to fetch tokens using email and password
     let url = API_URL + "/token/";
     let response = await fetch(url, {
       method: "POST",
@@ -37,18 +44,22 @@ export function AuthProvider({ children }) {
 
     let data = await response.json();
 
+    // Based on results either save tokens and user or send bad alert
     if (response.status === 200) {
       setAuthTokens(data);
       setUser(jwt_decode(data.access));
       localStorage.setItem("authTokens", JSON.stringify(data));
       navigate("/");
     } else {
+      // TBC change message based on return result
       alert("Bad Request: Login Failed");
     }
   };
 
+  // add user function
   let addUser = async (values) => {
-    // e.preventDefault();
+
+    // use API URL to make a new user
     let url = API_URL + "/create-typer";
     let response = await fetch(url, {
       method: "POST",
@@ -64,6 +75,7 @@ export function AuthProvider({ children }) {
 
     let data = await response.json();
 
+    // if successful then login and gain a token
     if (response.status === 201) {
       let url = API_URL + "/token/";
       let response = await fetch(url, {
@@ -92,6 +104,7 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // function uses the refresh url to get a new access token
   let updateToken = async () => {
     console.log("Updated Token");
     let url = API_URL + "/token/refresh/";
@@ -118,6 +131,7 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // function to logout user by removing access and refresh tokens
   let logout = () => {
     setAuthTokens(null);
     setUser(null);
@@ -125,6 +139,7 @@ export function AuthProvider({ children }) {
     // navigate("/");
   };
 
+  // context data that can be used in other components
   let contextData = {
     user: user,
     authTokens: authTokens,

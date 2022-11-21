@@ -1,29 +1,10 @@
 import React from "react";
 import { Table } from "react-bootstrap";
 
+// Records table used in Records page and High Scores page
 export default function RecordsTable({ user, records }) {
   return (
     <div>
-      {/* <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>Speed</th>
-            <th>Accuracy</th>
-            <th>Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {records.length >= 0
-            ? records.map((record) => (
-                <tr>
-                  <td>{record.speed} wpm</td>
-                  <td>{record.accuracy}%</td>
-                  <td>{record.created_at}</td>
-                </tr>
-              ))
-            : null}
-        </tbody>
-      </Table> */}
       {user ? (
         <Table striped bordered hover>
           <thead>
@@ -33,6 +14,11 @@ export default function RecordsTable({ user, records }) {
               <th>Date</th>
             </tr>
           </thead>
+
+          {/* 
+          - Show highest scores of all players in high scores page
+          - Show all the records of a single user in records Page
+          */}
           <tbody>
             {records.length >= 0
               ? records.map((record) => (

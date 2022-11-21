@@ -4,12 +4,16 @@ import AuthContext from "../context/AuthContext";
 import { RecordsTable } from "../components";
 import { Col, Container, Row, Card } from "react-bootstrap";
 
+// Records page for logged in user to see their stats
 export default function Records(props) {
+  // Context data
   let { user, authTokens, logout } = useContext(AuthContext);
 
+  // states for current stats and records
   let [stats, setStats] = useState({});
   let [records, setRecords] = useState({});
 
+  //function to use API URL to get the current stats of the user
   const getStats = async () => {
     if (authTokens) {
       console.log("Getting typer stats");
@@ -34,6 +38,7 @@ export default function Records(props) {
     }
   };
 
+  // function to get the records of an individual user
   const getRecords = async () => {
     if (authTokens) {
       console.log("Getting typer stats");
@@ -63,6 +68,7 @@ export default function Records(props) {
     getRecords();
   }, []);
 
+  // return the formatted current stats and records table
   return (
     <Container>
       <h1>Your Records</h1>
@@ -74,6 +80,7 @@ export default function Records(props) {
   );
 }
 
+// functional component to set up the current stats
 function CurrentStats({ stats }) {
   return (
     <Row>
@@ -87,6 +94,7 @@ function CurrentStats({ stats }) {
   );
 }
 
+// individual card component fo r a particular stat
 // TBC
 function CardStats({ title, stat }) {
   return (

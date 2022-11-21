@@ -4,20 +4,26 @@ import { useNavigate } from "react-router-dom";
 import { API_URL } from "../constants";
 import AuthContext from "../context/AuthContext";
 
+// Sign up page
 export default function SignUp() {
+  // context data
   let { user, addUser } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // set initial values for the form
   const initialFormValues = {
     email: "",
     username: "",
     password: "",
     password2: "",
   };
+
+  // state values for the form and error msgs
   const [formValues, setFormValues] = useState(initialFormValues);
   const [formErrors, setFormErrors] = useState({});
-  // const [validated, setValidation] = useState(false);
 
+  // call function on change
+  // takes the values and sets teh form values to be submitted
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormValues({ ...formValues, [name]: value });
@@ -25,6 +31,7 @@ export default function SignUp() {
     // console.log(validated);
   };
 
+  // when submit button pressed check if the form values are ok and then submit using addUser
   const handleSubmit = (e) => {
     e.preventDefault();
     let errors = validate(formValues);
@@ -36,6 +43,7 @@ export default function SignUp() {
     }
   };
 
+  // Checks if form values are alright then sets the error msgs
   const validate = (fValues) => {
     const errors = {};
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
@@ -77,6 +85,7 @@ export default function SignUp() {
     // console.log(validated);
   }, []);
 
+  // Sign up form
   // TBC
   return (
     <Container className="d-grid validationContainer">

@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Navbar, Nav, NavDropdown, Button, Container } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
 
+// Navbar component on the top of every page
 export default function NavbarComp(props) {
   let { user, logout } = useContext(AuthContext);
   return (
@@ -12,11 +13,14 @@ export default function NavbarComp(props) {
 
           <Navbar.Toggle />
           <Navbar.Collapse>
+            {/* Common links */}
             <Nav className="me-auto">
               <Nav.Link href="/test">Take a Test</Nav.Link>
               <Nav.Link href="/high-scores">High Scores</Nav.Link>
               {user ? (<Nav.Link href="/records">Your Records</Nav.Link>) : null}
             </Nav>
+
+            {/* Adjust links based on whether user is logged in or not */}
             {user ? (
               // TBC
               <Nav className="me-2">

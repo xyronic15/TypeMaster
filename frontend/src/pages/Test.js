@@ -4,6 +4,7 @@ import { API_URL } from "../constants";
 import { useNavigate } from "react-router-dom";
 import { Col, Container, Row, Card } from "react-bootstrap";
 
+// Test page where users test their typing speed
 export default function Test(props) {
   let { user, authTokens } = useContext(AuthContext);
   const navigate = useNavigate();

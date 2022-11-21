@@ -1,4 +1,4 @@
-const TESTTXT = "TESTING";
 const API_URL = "http://127.0.0.1:8000/api"
 
-export { TESTTXT, API_URL };
+// Constants used in components
+export { API_URL };
