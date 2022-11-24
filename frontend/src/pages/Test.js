@@ -22,7 +22,7 @@ export default function Test(props) {
   let [quote, setQuote] = useState({});
 
   // state val for div after quote processed
-  let [quoteDiv, setQuoteDiv] = useState();
+  let [quoteArr, setQuoteArr] = useState();
 
   // inputted state value from user input
   let [typed, setTyped] = useState("");
@@ -36,9 +36,9 @@ export default function Test(props) {
   // state values for the final results fo the test
   let [result, setResult] = useState({});
 
-  // implement immediate change in quoteDiv state
-  const changeQuoteDiv = (arr) => {
-    setQuoteDiv((current) => arr);
+  // implement immediate change in quoteArr state
+  const changeQuoteArr = (arr) => {
+    setQuoteArr((current) => arr);
   };
 
   // function handles what to do when button is clicked
@@ -77,7 +77,7 @@ export default function Test(props) {
     if (response.status === 200) {
       setQuote(data);
       console.log(data);
-      extractQuoteDiv(data.text);
+      extractQuoteArr(data.text);
     } else {
       console.log(data);
       navigate("/");
@@ -85,15 +85,14 @@ export default function Test(props) {
   };
 
   // function uses quote value to make a div and set it
-  const extractQuoteDiv = (text) => {
+  const extractQuoteArr = (text) => {
     let arr = text.split("").map((value) => {
       return <span className="quote-char">{value}</span>;
     });
 
-    // setQuoteDiv(arr);
-    // setQuoteDiv({ ...quoteDiv, div: arr });
+    // setQuoteArr(arr);
     // console.log(arr);
-    changeQuoteDiv(arr);
+    changeQuoteArr(arr);
   };
 
   // called when user input changes
@@ -115,14 +114,7 @@ export default function Test(props) {
     <Container>
       <Card>
         <Card.Body>
-          <Row>
-            <Col>Source: {quote.source}</Col>
-            <Col>{quote.quotee}</Col>
-            <Col>{quote.tags}</Col>
-          </Row>
-          <Row>
-            <div>{quoteDiv}</div>
-          </Row>
+          <QuoteDiv quote={quote} quoteArr={quoteArr} />
           <Row>
             <InputGroup>
               <Form.Control
@@ -141,6 +133,21 @@ export default function Test(props) {
       </Card>
       <ResultsCard speed={10} time={10} accuracy={20} />
     </Container>
+  );
+}
+
+function QuoteDiv({ quote, quoteArr }) {
+  return (
+    <div>
+      <Row>
+        <Col>Source: {quote.source}</Col>
+        <Col>Speaker: {quote.quotee}</Col>
+        <Col>Tags: {quote.tags}</Col>
+      </Row>
+      <Row>
+        <div>{quoteArr}</div>
+      </Row>
+    </div>
   );
 }
 
