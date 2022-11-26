@@ -20,6 +20,7 @@ export default function Test(props) {
 
   // state val for retrieved data from API URL
   let [quote, setQuote] = useState({});
+  let [quoteLength, setQuoteLength] = useState();
 
   // state val for div after quote processed
   let [quoteArr, setQuoteArr] = useState();
@@ -76,6 +77,7 @@ export default function Test(props) {
 
     if (response.status === 200) {
       setQuote(data);
+      setQuoteLength(data.text.length);
       console.log(data);
       extractQuoteArr(data.text);
     } else {
@@ -87,7 +89,7 @@ export default function Test(props) {
   // function uses quote value to make a div and set it
   const extractQuoteArr = (text) => {
     let arr = text.split("").map((value) => {
-      return <span className="quote-char">{value}</span>;
+      return <span>{value}</span>;
     });
 
     // setQuoteArr(arr);
@@ -99,10 +101,37 @@ export default function Test(props) {
   const handleInput = (e) => {
     const input = e.target.value;
     setTyped(input);
+    compareText(input, false);
   };
 
   // function to compare the quote to the inputted text
-  const compareText = (input) => {};
+  const compareText = (input, done) => {
+    // separetes text and input into chars and then compares them one index at a time
+    // update the quoteArr
+    // if done is true then calculate % of correct text and return
+
+    let mistakeCount = 0;
+
+    let arr = quote.text.split("").map((char, ind) => {
+      // check if input and char matches
+      if (char === input[ind]) {
+        return <span className="text-success">{char}</span>;
+      } else if (input[ind] == null) {
+        return <span>{char}</span>;
+      } else {
+        mistakeCount++;
+        return <span className="text-danger">{char}</span>;
+      }
+    });
+
+    changeQuoteArr(arr);
+
+    console.log(mistakeCount);
+
+    if (done) {
+      return mistakeCount;
+    }
+  };
 
   useEffect(() => {
     if (Object.keys(quote).length === 0) {
@@ -121,7 +150,7 @@ export default function Test(props) {
                 as="textarea"
                 aria-label="With textarea"
                 onChange={handleInput}
-                // maxLength=""
+                maxLength={quoteLength}
               />
             </InputGroup>
           </Row>
