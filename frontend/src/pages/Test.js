@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import AuthContext from "../context/AuthContext";
 import { API_URL } from "../constants";
 import { useNavigate } from "react-router-dom";
@@ -25,41 +25,86 @@ export default function Test(props) {
   // state val for div after quote processed
   let [quoteArr, setQuoteArr] = useState();
 
-  // inputted state value from user input
+  // state values for user input
   let [typed, setTyped] = useState("");
+  let [disabled, setDisabled] = useState(true);
 
-  // state value for test -> intial value value is before
+  // state value for test -> initial value value is before
   let [testState, setTestState] = useState("before");
 
   // state values for recording time taken
-  let [times, setTimes] = useState({});
+  let [times, setTimes] = useState({
+    start: new Date().getTime(),
+    end: new Date().getTime(),
+  });
 
-  // state values for the final results fo the test
-  let [result, setResult] = useState({});
+  // state values for the final results for the test
+  let [result, setResult] = useState(null);
+
+  // text input ref
+  const textInput = useRef(null);
 
   // implement immediate change in quoteArr state
   const changeQuoteArr = (arr) => {
     setQuoteArr((current) => arr);
   };
 
+  // function to call when starting the test
+  const startTest = () => {
+    setDisabled((current) => false);
+    setTimes({ ...times, start: new Date().getTime() });
+    textInput.current.focus();
+    setTestState((current) => "during");
+  };
+
+  // function to call when the test has just finished
+  const finishedTest = (mistakeCount) => {
+    let endTime = new Date().getTime();
+    setTimes({ ...times, end: endTime });
+    console.log(times);
+
+    // calculate the stats time -> wpm -> accuracy
+    let timeInMins = (endTime - times.start) / (1000 * 60);
+    let minutesFloored = Math.floor(timeInMins);
+    let secondsRounded = Math.round((timeInMins - minutesFloored) * 60);
+
+    let numWords = quote.text.split(" ").length;
+    let wpm = (numWords / timeInMins).toFixed(1);
+
+    let numChars = quote.text.split("").length;
+    let accuracy = (((numChars - mistakeCount) / numChars) * 100).toFixed(1);
+
+    let newRes = {
+      speed: wpm,
+      mins: minutesFloored,
+      secs: secondsRounded,
+      accuracy: accuracy,
+    };
+
+    setResult({ ...result, ...newRes });
+
+    setTestState((current) => "after");
+  };
+
+  // function resets the test page's state values
+  const resetTest = () => {
+    textInput.current.value = "";
+    setTestState((current) => "before");
+    getQuote();
+  };
+
   // function handles what to do when button is clicked
   const buttonClick = () => {
     if (testState === "before") {
-      setTestState("during");
+      startTest();
     }
-    if (testState === "during") {
-      setTestState("after");
-    }
+    // if (testState === "during") {
+    //   setTestState("after");
+    // }
     if (testState === "after") {
       resetTest();
     }
     console.log(testState);
-  };
-
-  // function resets the test  page's state values
-  const resetTest = () => {
-    getQuote();
-    setTestState("before");
   };
 
   // function uses API to retrieve a new quote
@@ -105,32 +150,38 @@ export default function Test(props) {
   };
 
   // function to compare the quote to the inputted text
-  const compareText = (input, done) => {
+  const compareText = (input) => {
     // separetes text and input into chars and then compares them one index at a time
     // update the quoteArr
-    // if done is true then calculate % of correct text and return
 
     let mistakeCount = 0;
 
     let arr = quote.text.split("").map((char, ind) => {
       // check if input and char matches
       if (char === input[ind]) {
-        return <span className="text-success">{char}</span>;
+        if (ind + 1 === quote.text.length) {
+          finishedTest(mistakeCount);
+        }
+        return (
+          <span className="text-success">
+            <b>{char}</b>
+          </span>
+        );
       } else if (input[ind] == null) {
         return <span>{char}</span>;
       } else {
         mistakeCount++;
-        return <span className="text-danger">{char}</span>;
+        return (
+          <span className="text-danger">
+            <b>{char}</b>
+          </span>
+        );
       }
     });
 
     changeQuoteArr(arr);
 
     console.log(mistakeCount);
-
-    if (done) {
-      return mistakeCount;
-    }
   };
 
   useEffect(() => {
@@ -144,23 +195,37 @@ export default function Test(props) {
       <Card>
         <Card.Body>
           <QuoteDiv quote={quote} quoteArr={quoteArr} />
+          <hr />
           <Row>
             <InputGroup>
               <Form.Control
+                ref={textInput}
                 as="textarea"
                 aria-label="With textarea"
-                onChange={handleInput}
+                onChange={testState === "after" ? null : handleInput}
+                placeholder="Type here when you start..."
                 maxLength={quoteLength}
+                // disabled={disabled}
               />
             </InputGroup>
           </Row>
+
           {/* <input type="text" onChange={handleInput}></input> */}
           {/* {typed} */}
           {/* {testButton(testState)} */}
+          <hr />
           <TestButton state={testState} buttonClick={buttonClick} />
         </Card.Body>
       </Card>
-      <ResultsCard speed={10} time={10} accuracy={20} />
+      {result ? (
+        <ResultsCard
+          speed={result.speed}
+          mins={result.mins}
+          secs={result.secs}
+          accuracy={result.accuracy}
+        />
+      ) : null}
+      {/* // <ResultsCard speed={10} time={10} accuracy={20} /> */}
     </Container>
   );
 }
@@ -173,6 +238,7 @@ function QuoteDiv({ quote, quoteArr }) {
         <Col>Speaker: {quote.quotee}</Col>
         <Col>Tags: {quote.tags}</Col>
       </Row>
+      <hr />
       <Row>
         <div>{quoteArr}</div>
       </Row>
@@ -189,7 +255,7 @@ function TestButton({ state, buttonClick }) {
         </Button>
       );
     case "during":
-      return <Button onClick={buttonClick}>Testing...</Button>;
+      return <Button disabled>Typing...</Button>;
     case "after":
       return (
         <Button variant="primary" onClick={buttonClick}>
@@ -199,7 +265,7 @@ function TestButton({ state, buttonClick }) {
   }
 }
 
-function ResultsCard({ speed, time, accuracy }) {
+function ResultsCard({ speed, mins, secs, accuracy }) {
   return (
     <Card>
       <Card.Body>
@@ -208,10 +274,10 @@ function ResultsCard({ speed, time, accuracy }) {
             Speed: {speed} wpm
           </Col>
           <Col className="d-flex justify-content-md-center">
-            Time taken: {time}
+            Time taken: {mins}:{secs}
           </Col>
           <Col className="d-flex justify-content-md-center">
-            Accuracy: {accuracy}
+            Accuracy: {accuracy}%
           </Col>
         </Row>
       </Card.Body>
