@@ -8,7 +8,6 @@ const AuthContext = createContext();
 export default AuthContext;
 
 export function AuthProvider({ children }) {
-
   // Tokens saved into cache needed for access, authentication and refreshing
   let [authTokens, setAuthTokens] = useState(() =>
     localStorage.getItem("authTokens")
@@ -58,7 +57,6 @@ export function AuthProvider({ children }) {
 
   // add user function
   let addUser = async (values) => {
-
     // use API URL to make a new user
     let url = API_URL + "/create-typer";
     let response = await fetch(url, {

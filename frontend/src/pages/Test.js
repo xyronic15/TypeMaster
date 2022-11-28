@@ -25,10 +25,6 @@ export default function Test(props) {
   // state val for div after quote processed
   let [quoteArr, setQuoteArr] = useState();
 
-  // state values for user input
-  let [typed, setTyped] = useState("");
-  let [disabled, setDisabled] = useState(true);
-
   // state value for test -> initial value value is before
   let [testState, setTestState] = useState("before");
 
@@ -51,7 +47,6 @@ export default function Test(props) {
 
   // function to call when starting the test
   const startTest = () => {
-    setDisabled((current) => false);
     setTimes({ ...times, start: new Date().getTime() });
     textInput.current.focus();
     setTestState((current) => "during");
@@ -81,6 +76,9 @@ export default function Test(props) {
       accuracy: accuracy,
     };
 
+    // call function to make new record
+    addRecord(wpm, accuracy);
+
     setResult({ ...result, ...newRes });
 
     setTestState((current) => "after");
@@ -89,6 +87,7 @@ export default function Test(props) {
   // function resets the test page's state values
   const resetTest = () => {
     textInput.current.value = "";
+    setResult(null);
     setTestState((current) => "before");
     getQuote();
   };
@@ -107,30 +106,6 @@ export default function Test(props) {
     console.log(testState);
   };
 
-  // function uses API to retrieve a new quote
-  const getQuote = async () => {
-    console.log("Getting Quote");
-    let url = API_URL + "/random-quote";
-    let response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    let data = await response.json();
-
-    if (response.status === 200) {
-      setQuote(data);
-      setQuoteLength(data.text.length);
-      console.log(data);
-      extractQuoteArr(data.text);
-    } else {
-      console.log(data);
-      navigate("/");
-    }
-  };
-
   // function uses quote value to make a div and set it
   const extractQuoteArr = (text) => {
     let arr = text.split("").map((value) => {
@@ -145,7 +120,6 @@ export default function Test(props) {
   // called when user input changes
   const handleInput = (e) => {
     const input = e.target.value;
-    setTyped(input);
     compareText(input, false);
   };
 
@@ -180,15 +154,70 @@ export default function Test(props) {
     });
 
     changeQuoteArr(arr);
+    // console.log(mistakeCount);
+  };
 
-    console.log(mistakeCount);
+  // function uses API to retrieve a new quote
+  const getQuote = async () => {
+    console.log("Getting Quote");
+    let url = API_URL + "/random-quote";
+    let response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    let data = await response.json();
+
+    if (response.status === 200) {
+      setQuote(data);
+      setQuoteLength(data.text.length);
+      console.log(data);
+      extractQuoteArr(data.text);
+    } else {
+      console.log(data);
+      navigate("/");
+    }
+  };
+
+  // function uses API to add a new record if user logged in
+  const addRecord = async (speed, accuracy) => {
+    if (user) {
+      console.log("Adding record");
+      let url = API_URL + "/new-record";
+      let response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + String(authTokens.access),
+        },
+        body: JSON.stringify({
+          speed: speed,
+          accuracy: accuracy,
+        }),
+      });
+
+      let data = await response.json();
+
+      // Based on results either save tokens and user or send bad alert
+      if (response.status === 200) {
+        console.log(data);
+      } else {
+        // TBC change message based on return result
+        alert(data);
+      }
+    } else {
+      console.log("Not logged in");
+    }
   };
 
   useEffect(() => {
     if (Object.keys(quote).length === 0) {
       getQuote();
+      console.log(quote);
     }
-  }, [quote]);
+  }, []);
 
   return (
     <Container>
@@ -205,14 +234,12 @@ export default function Test(props) {
                 onChange={testState === "after" ? null : handleInput}
                 placeholder="Type here when you start..."
                 maxLength={quoteLength}
+                spellcheck="false"
                 // disabled={disabled}
               />
             </InputGroup>
           </Row>
 
-          {/* <input type="text" onChange={handleInput}></input> */}
-          {/* {typed} */}
-          {/* {testButton(testState)} */}
           <hr />
           <TestButton state={testState} buttonClick={buttonClick} />
         </Card.Body>
