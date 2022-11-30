@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { API_URL } from "../constants";
+import { getRecords, getStats } from "../utils";
 import AuthContext from "../context/AuthContext";
 import { RecordsTable } from "../components";
 import { Col, Container, Row, Card } from "react-bootstrap";
@@ -13,59 +13,9 @@ export default function Records(props) {
   let [stats, setStats] = useState({});
   let [records, setRecords] = useState({});
 
-  //function to use API URL to get the current stats of the user
-  const getStats = async () => {
-    if (authTokens) {
-      console.log("Getting typer stats");
-      let url = API_URL + "/get-stats";
-      let response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + String(authTokens.access),
-        },
-      });
-
-      let data = await response.json();
-
-      if (response.status === 200) {
-        setStats(data);
-        //   console.log(data);
-      } else {
-        console.log(data);
-        logout();
-      }
-    }
-  };
-
-  // function to get the records of an individual user
-  const getRecords = async () => {
-    if (authTokens) {
-      console.log("Getting typer stats");
-      let url = API_URL + "/get-all-records";
-      let response = await fetch(url, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + String(authTokens.access),
-        },
-      });
-
-      let data = await response.json();
-
-      if (response.status === 200) {
-        setRecords(data);
-        console.log(data);
-      } else {
-        console.log(data);
-        logout();
-      }
-    }
-  };
-
   useEffect(() => {
-    getStats();
-    getRecords();
+    getStats(authTokens.access).then((data) => setStats(data));
+    getRecords(authTokens.access).then((data) => setRecords(data));
   }, []);
 
   // return the formatted current stats and records table
@@ -82,13 +32,14 @@ export default function Records(props) {
 
 // functional component to set up the current stats
 function CurrentStats({ stats }) {
+  console.log(stats);
   return (
     <Row>
       <Col>
         <CardStats title={"Average Speed"} stat={stats.avg_speed + " wpm"} />
       </Col>
       <Col>
-        <CardStats title={"Average Accuracy"} stat={stats.avg_speed + "%"} />
+        <CardStats title={"Average Accuracy"} stat={stats.avg_accuracy + "%"} />
       </Col>
     </Row>
   );

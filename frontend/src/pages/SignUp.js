@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Form, Button, Container, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { API_URL } from "../constants";
 import AuthContext from "../context/AuthContext";
 
 // Sign up page

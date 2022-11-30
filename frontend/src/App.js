@@ -2,8 +2,7 @@
 import "./App.css";
 import { NavbarComp } from "./components";
 import "bootstrap/dist/css/bootstrap.min.css";
-import React, { useEffect, useState } from "react";
-import { API_URL } from "./constants";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home, Test, HighScores, SignIn, SignUp, Records } from "./pages";
 import { PrivateRoute } from "./utils";
