@@ -75,13 +75,6 @@ export default function SignUp() {
     if (user) {
       navigate("/");
     }
-    // if (JSON.stringify(formErrors) === "{}") {
-    //   setValidation(true);
-    // } else {
-    //   setValidation(false);
-    // }
-    // console.log(formErrors);
-    // console.log(validated);
   }, []);
 
   // Sign up form

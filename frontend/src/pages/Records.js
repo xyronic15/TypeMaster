@@ -7,7 +7,7 @@ import { Col, Container, Row, Card } from "react-bootstrap";
 // Records page for logged in user to see their stats
 export default function Records(props) {
   // Context data
-  let { user, authTokens, logout } = useContext(AuthContext);
+  let { user, authTokens } = useContext(AuthContext);
 
   // states for current stats and records
   let [stats, setStats] = useState({});
