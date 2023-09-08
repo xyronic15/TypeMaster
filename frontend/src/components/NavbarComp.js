@@ -3,7 +3,7 @@ import { Navbar, Nav, NavDropdown, Button, Container } from "react-bootstrap";
 import AuthContext from "../context/AuthContext";
 
 // Navbar component on the top of every page
-export default function NavbarComp(props) {
+const NavbarComp = (props) => {
   let { user, logout } = useContext(AuthContext);
   return (
     <div>
@@ -41,3 +41,4 @@ export default function NavbarComp(props) {
     </div>
   );
 }
+export default NavbarComp;

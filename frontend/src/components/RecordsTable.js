@@ -2,7 +2,7 @@ import React from "react";
 import { Table } from "react-bootstrap";
 
 // Records table used in Records page and High Scores page
-export default function RecordsTable({ user, records }) {
+const RecordsTable = ({ user, records }) => {
   return (
     <div>
       {user ? (
@@ -58,3 +58,5 @@ export default function RecordsTable({ user, records }) {
     </div>
   );
 }
+
+export default RecordsTable;

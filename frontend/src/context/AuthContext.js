@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const AuthContext = createContext();
 export default AuthContext;
 
-export function AuthProvider({ children }) {
+export const AuthProvider = ({ children }) => {
   // Tokens saved into cache needed for access, authentication and refreshing
   let [authTokens, setAuthTokens] = useState(() =>
     localStorage.getItem("authTokens")

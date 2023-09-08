@@ -4,7 +4,7 @@ import { Container } from "react-bootstrap";
 import { RecordsTable } from "../components";
 
 // Page that shows the highest scores of each player
-export default function HighScores(props) {
+const HighScores = (props) => {
   // records state value to hold the records of each typer
   let [records, setRecords] = useState({});
 
@@ -14,7 +14,7 @@ export default function HighScores(props) {
     // setRecords(recordData);
   }, []);
 
-  // return a table that formats te "records" value
+  // return a table that formats the "records" value
   return (
     <Container>
       <h1>Highest Scores</h1>
@@ -22,3 +22,5 @@ export default function HighScores(props) {
     </Container>
   );
 }
+
+export default HighScores;
