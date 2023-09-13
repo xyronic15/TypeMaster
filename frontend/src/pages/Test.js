@@ -153,11 +153,16 @@ export default function Test(props) {
     let arr = quote.text.split("").map((char, ind) => {
       // check if input and char matches
       if (char === input[ind]) {
-        if (ind + 1 === input.length){
-          setCorrectCount(correctCount + 1)
-        }
         if (ind + 1 === quote.text.length) {
           finishedTest();
+        }
+        if (ind + 1 === input.length) {
+          setCorrectCount(correctCount + 1)
+          return (
+            <span className="text-success border border-start-0 border-bottom-0 border-top-0 border-dark">
+              <b>{char}</b>
+            </span>
+          );
         }
         return (
           <span className="text-success">
@@ -167,8 +172,15 @@ export default function Test(props) {
       } else if (input[ind] == null) {
         return <span>{char}</span>;
       } else {
+        if (ind + 1 === input.length) {
+          return (
+            <span className="text-danger border border-start-0 border-bottom-0 border-top-0 border-dark">
+              <b>{char}</b>
+            </span>
+          );
+        }
         return (
-          <span className="text-danger">
+          <span className="text-danger border-right-1">
             <b>{char}</b>
           </span>
         );
