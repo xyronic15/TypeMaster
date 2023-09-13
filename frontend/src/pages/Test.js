@@ -35,6 +35,10 @@ export default function Test(props) {
     end: new Date().getTime(),
   });
 
+  // state count for number of keys pressed
+  let [keyCount, setKeyCount] = useState(1);
+  let [correctCount, setCorrectCount] = useState(1)
+
   // state values for the final results for the test
   let [result, setResult] = useState(null);
 
@@ -62,7 +66,7 @@ export default function Test(props) {
   };
 
   // function to call when the test has just finished
-  const finishedTest = (mistakeCount) => {
+  const finishedTest = () => {
     let endTime = new Date().getTime();
     setTimes({ ...times, end: endTime });
     console.log(times);
@@ -81,8 +85,8 @@ export default function Test(props) {
     let numWords = quote.text.split(" ").length;
     let wpm = (numWords / timeInMins).toFixed(1);
 
-    let numChars = quote.text.split("").length;
-    let accuracy = (((numChars - mistakeCount) / numChars) * 100).toFixed(1);
+    let accuracy = ((correctCount / keyCount) * 100).toFixed(1);
+    console.log(correctCount, keyCount);
 
     let newRes = {
       speed: wpm,
@@ -103,6 +107,8 @@ export default function Test(props) {
   const resetTest = () => {
     textInput.current.value = "";
     setResult(null);
+    setKeyCount(1)
+    setCorrectCount(1)
     setTestState((current) => "before");
     getQuote();
   };
@@ -135,7 +141,6 @@ export default function Test(props) {
   // called when user input changes
   const handleInput = (e) => {
     const input = e.target.value;
-
     compareText(input, false);
   };
 
@@ -143,14 +148,16 @@ export default function Test(props) {
   const compareText = (input) => {
     // separetes text and input into chars and then compares them one index at a time
     // update the quoteArr
-
-    let mistakeCount = 0;
+    setKeyCount(keyCount + 1);
 
     let arr = quote.text.split("").map((char, ind) => {
       // check if input and char matches
       if (char === input[ind]) {
+        if (ind + 1 === input.length){
+          setCorrectCount(correctCount + 1)
+        }
         if (ind + 1 === quote.text.length) {
-          finishedTest(mistakeCount);
+          finishedTest();
         }
         return (
           <span className="text-success">
@@ -160,7 +167,6 @@ export default function Test(props) {
       } else if (input[ind] == null) {
         return <span>{char}</span>;
       } else {
-        mistakeCount++;
         return (
           <span className="text-danger">
             <b>{char}</b>
