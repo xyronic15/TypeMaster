@@ -43,7 +43,7 @@ export default function Test(props) {
   let [result, setResult] = useState(null);
 
   // countdown hook
-  let [secondsLeft, startCountdown] = useCountdown()
+  let [secondsLeft, start] = useCountdown()
 
   // text input ref
   const textInput = useRef(null);
@@ -53,12 +53,19 @@ export default function Test(props) {
     setQuoteArr((current) => arr);
   };
 
+  // function to start the countdown
+  const startCountdown = () => {
+    setTestState((current) => "countdown");
+    start(3);
+    console.log(secondsLeft);
+
+    // if (secondsLeft === 0) {
+    //   startTest();
+    // }
+  }
+
   // function to call when starting the test
   const startTest = () => {
-    // setTimes({ ...times, start: new Date().getTime() });
-    // textInput.current.focus();
-    // setTestState((current) => "during");
-
     setTimes({ ...times, start: new Date().getTime() });
     setTestState((current) => "during");
     textInput.current.focus();
@@ -116,7 +123,7 @@ export default function Test(props) {
   // function handles what to do when button is clicked
   const buttonClick = () => {
     if (testState === "before") {
-      startTest();
+      startCountdown();
     }
     // if (testState === "during") {
     //   setTestState("after");
@@ -255,7 +262,11 @@ export default function Test(props) {
     if (testState === "during") {
       textInput.current.focus();
     }
-  }, [testState]);
+
+    if (secondsLeft === 0 &&  testState ==="countdown") {
+      startTest();
+    }
+  }, [testState, secondsLeft],);
 
   return (
     <Container>
@@ -317,6 +328,12 @@ function TestButton({ state, buttonClick, secondsLeft }) {
       return (
         <Button variant="primary" onClick={buttonClick}>
           Start
+        </Button>
+      );
+    case "countdown":
+      return (
+        <Button disabled>
+          {secondsLeft}
         </Button>
       );
     case "during":
