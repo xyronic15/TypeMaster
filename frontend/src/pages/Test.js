@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from "react";
+import useCountdown from "../utils/useCountdown";
 import AuthContext from "../context/AuthContext";
 import { API_URL } from "../constants";
 import { useNavigate } from "react-router-dom";
@@ -37,6 +38,9 @@ export default function Test(props) {
   // state values for the final results for the test
   let [result, setResult] = useState(null);
 
+  // countdown hook
+  let [secondsLeft, startCountdown] = useCountdown()
+
   // text input ref
   const textInput = useRef(null);
 
@@ -47,9 +51,14 @@ export default function Test(props) {
 
   // function to call when starting the test
   const startTest = () => {
+    // setTimes({ ...times, start: new Date().getTime() });
+    // textInput.current.focus();
+    // setTestState((current) => "during");
+
     setTimes({ ...times, start: new Date().getTime() });
-    textInput.current.focus();
     setTestState((current) => "during");
+    textInput.current.focus();
+
   };
 
   // function to call when the test has just finished
@@ -60,8 +69,14 @@ export default function Test(props) {
 
     // calculate the stats time -> wpm -> accuracy
     let timeInMins = (endTime - times.start) / (1000 * 60);
-    let minutesFloored = Math.floor(timeInMins);
-    let secondsRounded = Math.round((timeInMins - minutesFloored) * 60);
+    let minutesFloored = Math.floor(timeInMins).toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    })
+    let secondsRounded = Math.round((timeInMins - minutesFloored) * 60).toLocaleString('en-US', {
+      minimumIntegerDigits: 2,
+      useGrouping: false
+    })
 
     let numWords = quote.text.split(" ").length;
     let wpm = (numWords / timeInMins).toFixed(1);
@@ -120,6 +135,7 @@ export default function Test(props) {
   // called when user input changes
   const handleInput = (e) => {
     const input = e.target.value;
+
     compareText(input, false);
   };
 
@@ -217,7 +233,11 @@ export default function Test(props) {
       getQuote();
       console.log(quote);
     }
-  }, []);
+
+    if (testState === "during") {
+      textInput.current.focus();
+    }
+  }, [testState]);
 
   return (
     <Container>
@@ -235,13 +255,13 @@ export default function Test(props) {
                 placeholder="Type here when you start..."
                 maxLength={quoteLength}
                 spellcheck="false"
-                // disabled={disabled}
+                disabled={testState === "during" ? false : true}
               />
             </InputGroup>
           </Row>
 
           <hr />
-          <TestButton state={testState} buttonClick={buttonClick} />
+          <TestButton state={testState} buttonClick={buttonClick} secondsLeft={secondsLeft} />
         </Card.Body>
       </Card>
       {result ? (
@@ -273,7 +293,7 @@ function QuoteDiv({ quote, quoteArr }) {
   );
 }
 
-function TestButton({ state, buttonClick }) {
+function TestButton({ state, buttonClick, secondsLeft }) {
   switch (state) {
     case "before":
       return (
