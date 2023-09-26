@@ -266,7 +266,7 @@ export default function Test(props) {
     if (secondsLeft === 0 &&  testState ==="countdown") {
       startTest();
     }
-  }, [testState, secondsLeft],);
+  }, [testState, secondsLeft, quote],);
 
   return (
     <Container>
