@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Navbar, Nav, NavDropdown, Button, Container } from "react-bootstrap";
+import { BsPersonCircle } from "react-icons/bs";
 import AuthContext from "../context/AuthContext";
 
 // Navbar component on the top of every page
