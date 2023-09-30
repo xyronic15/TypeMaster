@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Form, Button, Container, Card } from "react-bootstrap";
+import { Form, Container, Card, Stack } from "react-bootstrap";
+import { Button } from "../components";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 
@@ -78,53 +79,52 @@ export default function SignUp() {
   }, []);
 
   // Sign up form
-  // TBC
   return (
     <Container className="d-grid validationContainer">
-      <Card className="p-3" style={{ width: "35%" }}>
+      <Card className="p-5">
         <form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control
-              type="email"
-              name="email"
-              placeholder="Enter email"
-              onChange={handleChange}
-            />
-            <p className="text-danger">{formErrors.email}</p>
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Username</Form.Label>
-            <Form.Control
-              name="username"
-              placeholder="Enter username"
-              onChange={handleChange}
-            />
-            <p className="text-danger">{formErrors.username}</p>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              name="password"
-              placeholder="Password"
-              onChange={handleChange}
-            />
-            <p className="text-danger">{formErrors.password}</p>
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              name="password2"
-              placeholder="Repeat your password"
-              onChange={handleChange}
-            />
-            <p className="text-danger">{formErrors.password2}</p>
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
+          <Stack gap={5} className="align-items-center">
+            <h2>Sign Up</h2>
+            <Form.Group className="w-100" controlId="formBasicEmail">
+              <Form.Control
+                type="email"
+                name="email"
+                placeholder="Email"
+                onChange={handleChange}
+              />
+              <p className="text-danger">{formErrors.email}</p>
+            </Form.Group>
+            <Form.Group className="w-100">
+              <Form.Control
+                name="username"
+                placeholder="Username"
+                onChange={handleChange}
+              />
+              <p className="text-danger">{formErrors.username}</p>
+            </Form.Group>
+            <Form.Group className="w-100" controlId="formBasicPassword">
+              <Form.Control
+                type="password"
+                name="password"
+                placeholder="Password"
+                onChange={handleChange}
+              />
+              <p className="text-danger">{formErrors.password}</p>
+            </Form.Group>
+            <Form.Group className="w-100" controlId="formBasicPassword">
+              <Form.Control
+                type="password"
+                name="password2"
+                placeholder="Re-enter your password"
+                onChange={handleChange}
+              />
+              <p className="text-danger">{formErrors.password2}</p>
+            </Form.Group>
+            <Button variant="primary" type="submit" className="w-100">
+              Submit
+            </Button>
+          </Stack>
+
         </form>
       </Card>
     </Container>

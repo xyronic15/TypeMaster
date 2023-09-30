@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from "react";
-import { Form, Button, Container, Card } from "react-bootstrap";
+import { Form, Container, Card, Stack } from "react-bootstrap";
+import { Button } from '../components'
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 
@@ -20,26 +21,34 @@ export default function SignIn() {
   // return sing in form
   return (
     <Container className="d-grid validationContainer">
-      <Card className="p-3" style={{ width: "35%" }}>
+      <Card className="p-5">
 
         {/* upon submitting the form, pass the event info to the loginUser function */}
         <form onSubmit={loginUser}>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Label>Email address</Form.Label>
-            <Form.Control type="email" name="email" placeholder="Enter email" />
-          </Form.Group>
+          <Stack gap={5} className="align-items-center">
+            <h2>Sign In</h2>
+            <Form.Group className="w-100" controlId="formBasicEmail">
+              <Form.Control
+                type="email"
+                name="email"
+                placeholder="Email"
+                className="my-3"
+              />
+            </Form.Group>
 
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              name="password"
-              placeholder="Password"
-            />
-          </Form.Group>
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
+            <Form.Group className="w-100" controlId="formBasicPassword">
+              <Form.Control
+                type="password"
+                name="password"
+                placeholder="Password"
+                className="my-3"
+              />
+            </Form.Group>
+            <Button variant="primary" type="submit" style={{ width: "100%" }} className="py-2">
+              Submit
+            </Button>
+          </Stack>
+
         </form>
       </Card>
     </Container>
