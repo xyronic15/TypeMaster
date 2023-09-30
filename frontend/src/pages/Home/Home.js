@@ -74,7 +74,7 @@ export default function Home(props) {
             <Button href="/high-scores" className="my-1" style={{
               width: "200px"
             }}
-            >High Scores</Button>
+            >Leaderboard</Button>
           </Col>
         </Row>
       </Container>

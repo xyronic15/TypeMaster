@@ -36,15 +36,23 @@
     transform: rotate(360deg);
   }
 } */
+html,
+#root {
+  background-color: #fef6df;
+}
 
 h1,
 h2 {
   font-family: "Merriweather", serif;
+  font-weight: 700 !important;
 }
 
 h1 {
-  font-weight: 700 !important;
   font-size: 70px;
+}
+
+h2 {
+  font-size: 40px;
 }
 
 .validationContainer {
@@ -52,4 +60,23 @@ h1 {
   height: 90vh;
 }
 
-/* Test page styling */
+.validationContainer .card {
+  width: 450px !important;
+}
+
+.validationContainer .form-control {
+  border: none !important;
+  border-bottom: 1px solid #62677b !important;
+  border-radius: 0 !important;
+}
+
+.card {
+  /* width: 450px; */
+  border-radius: 16px !important;
+  border: 0 !important;
+}
+
+input {
+  font-family: "Raleway", sans-serif;
+  font-size: 20px !important;
+}
