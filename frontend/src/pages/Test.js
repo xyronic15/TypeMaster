@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import useCountdown from "../utils/useCountdown";
 import AuthContext from "../context/AuthContext";
 import { API_URL } from "../constants";
+import { getQuote } from "../utils";
 import { useNavigate } from "react-router-dom";
 import {
   Col,
@@ -117,7 +118,16 @@ export default function Test(props) {
     setKeyCount(1)
     setCorrectCount(1)
     setTestState((current) => "before");
-    getQuote();
+    getQuote().then(({ data, response }) => {
+      if (response.status === 200) {
+        setQuote(data);
+        setQuoteLength(data.text.length);
+        console.log(data, response);
+        extractQuoteArr(data.text);
+      } else {
+        navigate("/");
+      }
+    });
   };
 
   // function handles what to do when button is clicked
@@ -198,30 +208,6 @@ export default function Test(props) {
     // console.log(mistakeCount);
   };
 
-  // function uses API to retrieve a new quote
-  const getQuote = async () => {
-    console.log("Getting Quote");
-    let url = API_URL + "/random-quote";
-    let response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    let data = await response.json();
-
-    if (response.status === 200) {
-      setQuote(data);
-      setQuoteLength(data.text.length);
-      console.log(data);
-      extractQuoteArr(data.text);
-    } else {
-      console.log(data);
-      navigate("/");
-    }
-  };
-
   // function uses API to add a new record if user logged in
   const addRecord = async (speed, accuracy) => {
     if (user) {
@@ -255,7 +241,16 @@ export default function Test(props) {
 
   useEffect(() => {
     if (Object.keys(quote).length === 0) {
-      getQuote();
+      getQuote().then(({ data, response }) => {
+        if (response.status === 200) {
+          setQuote(data);
+          setQuoteLength(data.text.length);
+          console.log(data, response);
+          extractQuoteArr(data.text);
+        } else {
+          navigate("/");
+        }
+      });
       console.log(quote);
     }
 
@@ -263,7 +258,7 @@ export default function Test(props) {
       textInput.current.focus();
     }
 
-    if (secondsLeft === 0 &&  testState ==="countdown") {
+    if (secondsLeft === 0 && testState === "countdown") {
       startTest();
     }
   }, [testState, secondsLeft, quote],);

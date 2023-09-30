@@ -65,4 +65,33 @@ const getStats = async (accessToken) => {
   }
 };
 
-export { getRecords, getStats };
+// function to use API URL to get a random quote
+const getQuote = async () => {
+  console.log("Getting Quote");
+  let url = API_URL + "/random-quote";
+  let response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  let data = await response.json();
+
+  if (response.status === 200) {
+    // setQuote(data);
+    // setQuoteLength(data.text.length);
+    // console.log(data);
+    // extractQuoteArr(data.text);
+    return {
+      data: data,
+      response: response
+    };
+  } else {
+    console.log(data);
+    // navigate("/");
+  }
+}
+
+
+export { getRecords, getStats, getQuote };

@@ -37,7 +37,17 @@
   }
 } */
 
-.validationContainer{
+h1,
+h2 {
+  font-family: "Merriweather", serif;
+}
+
+h1 {
+  font-weight: 700 !important;
+  font-size: 70px;
+}
+
+.validationContainer {
   place-items: center center;
   height: 90vh;
 }
