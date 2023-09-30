@@ -83,7 +83,7 @@ export default function SignUp() {
     <Container className="d-grid validationContainer">
       <Card className="p-5">
         <form onSubmit={handleSubmit}>
-          <Stack gap={5} className="align-items-center">
+          <Stack gap={4} className="align-items-center">
             <h2>Sign Up</h2>
             <Form.Group className="w-100" controlId="formBasicEmail">
               <Form.Control
@@ -91,6 +91,7 @@ export default function SignUp() {
                 name="email"
                 placeholder="Email"
                 onChange={handleChange}
+                className="my-3"
               />
               <p className="text-danger">{formErrors.email}</p>
             </Form.Group>
@@ -99,6 +100,7 @@ export default function SignUp() {
                 name="username"
                 placeholder="Username"
                 onChange={handleChange}
+                className="my-3"
               />
               <p className="text-danger">{formErrors.username}</p>
             </Form.Group>
@@ -108,6 +110,7 @@ export default function SignUp() {
                 name="password"
                 placeholder="Password"
                 onChange={handleChange}
+                className="my-3"
               />
               <p className="text-danger">{formErrors.password}</p>
             </Form.Group>
@@ -117,6 +120,7 @@ export default function SignUp() {
                 name="password2"
                 placeholder="Re-enter your password"
                 onChange={handleChange}
+                className="my-3"
               />
               <p className="text-danger">{formErrors.password2}</p>
             </Form.Group>
