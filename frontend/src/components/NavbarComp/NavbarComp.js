@@ -24,7 +24,7 @@ const NavbarComp = (props) => {
           {/* Common links */}
           <Nav className="ms-auto">
             <Nav.Link href="/test">Test</Nav.Link>
-            <Nav.Link href="/high-scores">High Scores</Nav.Link>
+            <Nav.Link href="/leaderboard">Leaderboard</Nav.Link>
 
             {/* Adjust links based on whether user is logged in or not */}
             {user ? (

@@ -4,7 +4,7 @@ import { NavbarComp } from "./components";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Home, Test, HighScores, SignIn, SignUp, Records } from "./pages";
+import { Home, Test, Leaderboard, SignIn, SignUp, Records } from "./pages";
 import { PrivateRoute } from "./utils";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -18,7 +18,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />}></Route>
           <Route path="/test" element={<Test />}></Route>
-          <Route path="/high-scores" element={<HighScores />}></Route>
+          <Route path="/leaderboard" element={<Leaderboard />}></Route>
           <Route
             path="/records"
             element={
