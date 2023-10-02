@@ -4,12 +4,13 @@ import AuthContext from "../context/AuthContext";
 import { API_URL } from "../constants";
 import { getQuote } from "../utils";
 import { useNavigate } from "react-router-dom";
+import { useTypewriter, Cursor } from "react-simple-typewriter";
+import { Button } from '../components'
 import {
   Col,
   Container,
   Row,
   Card,
-  Button,
   Form,
   InputGroup,
 } from "react-bootstrap";
@@ -19,6 +20,12 @@ export default function Test(props) {
   // context data
   let { user, authTokens } = useContext(AuthContext);
   const navigate = useNavigate();
+
+  // typewriter text
+  const [text] = useTypewriter({
+    words: ['Test your speed'],
+    typeSpeed: 120,
+  })
 
   // state val for retrieved data from API URL
   let [quote, setQuote] = useState({});
@@ -191,13 +198,13 @@ export default function Test(props) {
       } else {
         if (ind + 1 === input.length) {
           return (
-            <span className="text-danger border border-start-0 border-bottom-0 border-top-0 border-dark">
+            <span className="bg-danger text-light border border-start-0 border-bottom-0 border-top-0 border-dark">
               <b>{char}</b>
             </span>
           );
         }
         return (
-          <span className="text-danger border-right-1">
+          <span className="bg-danger text-light border-right-1">
             <b>{char}</b>
           </span>
         );
@@ -264,11 +271,54 @@ export default function Test(props) {
   }, [testState, secondsLeft, quote],);
 
   return (
-    <Container>
+    <Container className="mt-5">
+      <h2 className="mb-4">
+        <span>
+          {text}
+        </span>
+        <span>
+          <Cursor />
+        </span>
+      </h2>
       <Card>
         <Card.Body>
-          <QuoteDiv quote={quote} quoteArr={quoteArr} />
-          <hr />
+          {/* <QuoteDiv quote={quote} quoteArr={quoteArr} /> */}
+          <Row>
+            <div style={{ fontSize: "20px" }}>{quoteArr}</div>
+          </Row>
+        </Card.Body>
+      </Card>
+      <Row md={2} className="mt-3">
+        <Col md={4}>
+          <Card className="h-100">
+            <Card.Body>
+              <h3>
+                {quote.source ? quote.source : "Source unknown"}
+              </h3>
+              <p>Spoken by {quote.quotee}</p>
+              <p className="mb-0">
+                Themes:
+              </p>
+              <p className="text-capitalize">({quote.tags})</p>
+            </Card.Body>
+          </Card>
+        </Col>
+        <Col md={8}>
+          <Card className="h-100">
+            {result ? (
+              <ResultsDiv
+                speed={result.speed}
+                mins={result.mins}
+                secs={result.secs}
+                accuracy={result.accuracy}
+              />
+            ) : null}
+          </Card>
+        </Col>
+      </Row>
+      <hr />
+      <Card className="mb-3">
+        <Card.Body>
           <Row>
             <InputGroup>
               <Form.Control
@@ -279,41 +329,17 @@ export default function Test(props) {
                 placeholder="Type here when you start..."
                 maxLength={quoteLength}
                 spellcheck="false"
+                id="test-area"
                 disabled={testState === "during" ? false : true}
               />
             </InputGroup>
           </Row>
 
-          <hr />
-          <TestButton state={testState} buttonClick={buttonClick} secondsLeft={secondsLeft} />
+
         </Card.Body>
       </Card>
-      {result ? (
-        <ResultsCard
-          speed={result.speed}
-          mins={result.mins}
-          secs={result.secs}
-          accuracy={result.accuracy}
-        />
-      ) : null}
-      {/* // <ResultsCard speed={10} time={10} accuracy={20} /> */}
+      <TestButton state={testState} buttonClick={buttonClick} secondsLeft={secondsLeft} />
     </Container>
-  );
-}
-
-function QuoteDiv({ quote, quoteArr }) {
-  return (
-    <div>
-      <Row>
-        <Col>Source: {quote.source}</Col>
-        <Col>Speaker: {quote.quotee}</Col>
-        <Col>Tags: {quote.tags}</Col>
-      </Row>
-      <hr />
-      <Row>
-        <div>{quoteArr}</div>
-      </Row>
-    </div>
   );
 }
 
@@ -321,43 +347,42 @@ function TestButton({ state, buttonClick, secondsLeft }) {
   switch (state) {
     case "before":
       return (
-        <Button variant="primary" onClick={buttonClick}>
+        <Button variant="primary" onClick={buttonClick} style={{ width: "200px" }}>
           Start
         </Button>
       );
     case "countdown":
       return (
-        <Button disabled>
+        <Button disabled style={{ width: "200px" }}>
           {secondsLeft}
         </Button>
       );
     case "during":
-      return <Button disabled>Typing...</Button>;
+      return <Button disabled style={{ width: "200px" }}>Typing...</Button>;
     case "after":
       return (
-        <Button variant="primary" onClick={buttonClick}>
+        <Button variant="primary" onClick={buttonClick} style={{ width: "200px" }}>
           Play Again
         </Button>
       );
   }
 }
 
-function ResultsCard({ speed, mins, secs, accuracy }) {
+function ResultsDiv({ speed, mins, secs, accuracy }) {
   return (
-    <Card>
-      <Card.Body>
-        <Row>
-          <Col className="d-flex justify-content-md-center">
-            Speed: {speed} wpm
-          </Col>
-          <Col className="d-flex justify-content-md-center">
-            Time taken: {mins}:{secs}
-          </Col>
-          <Col className="d-flex justify-content-md-center">
-            Accuracy: {accuracy}%
-          </Col>
-        </Row>
-      </Card.Body>
-    </Card>
+    <Card.Body>
+      <h3>Results</h3>
+      <Row className="h-100 align-items-center d-flex">
+        <Col className="d-flex justify-content-md-center">
+          <p>Speed: {speed} wpm</p>
+        </Col>
+        <Col className="d-flex justify-content-md-center">
+          <p>Time taken: {mins}:{secs}</p>
+        </Col>
+        <Col className="d-flex justify-content-md-center">
+          <p>Accuracy: {accuracy}%</p>
+        </Col>
+      </Row>
+    </Card.Body>
   );
 }
