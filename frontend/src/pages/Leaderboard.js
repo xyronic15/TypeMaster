@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getRecords } from "../utils";
+import { useTypewriter, Cursor } from 'react-simple-typewriter';
 import { Container } from "react-bootstrap";
 import { RecordsTable } from "../components";
 
@@ -7,6 +8,12 @@ import { RecordsTable } from "../components";
 const Leaderboard = (props) => {
   // records state value to hold the records of each typer
   let [records, setRecords] = useState({});
+
+  // typewriter text
+  const [text] = useTypewriter({
+    words: ['Leaderboard'],
+    typeSpeed: 120,
+  })
 
   useEffect(() => {
     getRecords().then((data) => setRecords(data));
@@ -16,8 +23,15 @@ const Leaderboard = (props) => {
 
   // return a table that formats the "records" value
   return (
-    <Container>
-      <h1>Leaderboard</h1>
+    <Container className="mt-5">
+      <h2>
+        <span>
+          {text}
+        </span>
+        <span>
+          <Cursor />
+        </span>
+      </h2>
       <RecordsTable records={records} />
     </Container>
   );

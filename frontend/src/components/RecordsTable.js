@@ -1,10 +1,11 @@
 import React from "react";
+import { Card } from "react-bootstrap";
 import { Table } from "react-bootstrap";
 
 // Records table used in Records page and High Scores page
 const RecordsTable = ({ user, records }) => {
   return (
-    <div>
+    <Card className="p-4 pb-1 mt-4">
       {user ? (
         <Table striped bordered hover>
           <thead>
@@ -22,19 +23,20 @@ const RecordsTable = ({ user, records }) => {
           <tbody>
             {records.length >= 0
               ? records.map((record) => (
-                  <tr>
-                    <td>{record.speed} wpm</td>
-                    <td>{record.accuracy}%</td>
-                    <td>{record.created_at}</td>
-                  </tr>
-                ))
+                <tr>
+                  <td>{record.speed} wpm</td>
+                  <td>{record.accuracy}%</td>
+                  <td>{record.created_at}</td>
+                </tr>
+              ))
               : null}
           </tbody>
         </Table>
       ) : (
-        <Table striped bordered hover>
+        <Table borderless hover>
           <thead>
             <tr>
+              <th>Rank</th>
               <th>Typer</th>
               <th>Speed</th>
               <th>Accuracy</th>
@@ -43,19 +45,20 @@ const RecordsTable = ({ user, records }) => {
           </thead>
           <tbody>
             {records.length >= 0
-              ? records.map((record) => (
-                  <tr>
-                    <td>{record.typer}</td>
-                    <td>{record.speed} wpm</td>
-                    <td>{record.accuracy}%</td>
-                    <td>{record.created_at}</td>
-                  </tr>
-                ))
+              ? records.map((record, index) => (
+                <tr>
+                  <td>{index + 1}</td>
+                  <td>{record.typer}</td>
+                  <td>{record.speed} wpm</td>
+                  <td>{record.accuracy}%</td>
+                  <td>{record.created_at.slice(0, 10)}</td>
+                </tr>
+              ))
               : null}
           </tbody>
         </Table>
       )}
-    </div>
+    </Card>
   );
 }
 
