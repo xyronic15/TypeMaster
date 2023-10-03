@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { getRecords, getStats } from "../utils";
 import AuthContext from "../context/AuthContext";
+import { useTypewriter, Cursor } from "react-simple-typewriter";
 import { RecordsTable } from "../components";
 import { Col, Container, Row, Card } from "react-bootstrap";
 
@@ -8,6 +9,12 @@ import { Col, Container, Row, Card } from "react-bootstrap";
 export default function Dashboard(props) {
   // Context data
   let { user, authTokens } = useContext(AuthContext);
+
+  // typewriter text
+  const [text] = useTypewriter({
+    words: ['Dashboard'],
+    typeSpeed: 120,
+  })
 
   // states for current stats and records
   let [stats, setStats] = useState({});
@@ -20,8 +27,15 @@ export default function Dashboard(props) {
 
   // return the formatted current stats and records table
   return (
-    <Container>
-      <h1>Your Records</h1>
+    <Container className="mt-5">
+      <h2 className="mb-4">
+        <span>
+          {text}
+        </span>
+        <span>
+          <Cursor />
+        </span>
+      </h2>
       <h2>Average Stats Over The Last 10 Games</h2>
       <CurrentStats stats={stats} />
       <h2>Game History</h2>
@@ -34,12 +48,12 @@ export default function Dashboard(props) {
 function CurrentStats({ stats }) {
   console.log(stats);
   return (
-    <Row>
+    <Row className="mb-5">
       <Col>
-        <CardStats title={"Average Speed"} stat={stats.avg_speed + " wpm"} />
+        <CardStats title={"Average Speed"} stat={parseFloat(stats.avg_speed).toFixed(1) + " wpm"} />
       </Col>
       <Col>
-        <CardStats title={"Average Accuracy"} stat={stats.avg_accuracy + "%"} />
+        <CardStats title={"Average Accuracy"} stat={parseFloat(stats.avg_accuracy).toFixed(1) + "%"} />
       </Col>
     </Row>
   );
@@ -49,7 +63,7 @@ function CurrentStats({ stats }) {
 // TBC
 function CardStats({ title, stat }) {
   return (
-    <Card className="m-2">
+    <Card className="m-2 h-100">
       <Card.Body>
         <div>
           <Row>
@@ -57,7 +71,7 @@ function CardStats({ title, stat }) {
               <h3>{title}</h3>
             </Card.Title>
             <br />
-            <span>{stat}</span>
+            <p>{stat}</p>
           </Row>
         </div>
       </Card.Body>

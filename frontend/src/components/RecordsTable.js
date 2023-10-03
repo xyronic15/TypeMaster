@@ -7,7 +7,7 @@ const RecordsTable = ({ user, records }) => {
   return (
     <Card className="p-4 pb-1 mt-4">
       {user ? (
-        <Table striped bordered hover>
+        <Table borderless hover>
           <thead>
             <tr>
               <th>Speed</th>
@@ -26,7 +26,7 @@ const RecordsTable = ({ user, records }) => {
                 <tr>
                   <td>{record.speed} wpm</td>
                   <td>{record.accuracy}%</td>
-                  <td>{record.created_at}</td>
+                  <td>{record.created_at.slice(0, 10)}</td>
                 </tr>
               ))
               : null}
