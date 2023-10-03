@@ -4,7 +4,7 @@ import { NavbarComp } from "./components";
 import "bootstrap/dist/css/bootstrap.min.css";
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Home, Test, Leaderboard, SignIn, SignUp, Records } from "./pages";
+import { Home, Test, Leaderboard, SignIn, SignUp, Dashboard } from "./pages";
 import { PrivateRoute } from "./utils";
 import { AuthProvider } from "./context/AuthContext";
 
@@ -20,10 +20,10 @@ function App() {
           <Route path="/test" element={<Test />}></Route>
           <Route path="/leaderboard" element={<Leaderboard />}></Route>
           <Route
-            path="/records"
+            path="/dashboard"
             element={
               <PrivateRoute>
-                <Records />
+                <Dashboard />
               </PrivateRoute>
             }
           ></Route>

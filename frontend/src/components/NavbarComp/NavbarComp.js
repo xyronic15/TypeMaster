@@ -33,7 +33,7 @@ const NavbarComp = (props) => {
                   Welcome {user.username}
                   <IoPersonCircleSharp size={25} className="ms-1 d-inline-block align-top" />
                 </>} className="me-2">
-                <NavDropdown.Item href="/records">Dashboard</NavDropdown.Item>
+                <NavDropdown.Item href="/dashboard">Dashboard</NavDropdown.Item>
                 <NavDropdown.Divider />
                 <NavDropdown.Item onClick={logout}>Sign Out</NavDropdown.Item>
               </NavDropdown>

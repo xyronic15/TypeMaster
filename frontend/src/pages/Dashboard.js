@@ -5,7 +5,7 @@ import { RecordsTable } from "../components";
 import { Col, Container, Row, Card } from "react-bootstrap";
 
 // Records page for logged in user to see their stats
-export default function Records(props) {
+export default function Dashboard(props) {
   // Context data
   let { user, authTokens } = useContext(AuthContext);
 
