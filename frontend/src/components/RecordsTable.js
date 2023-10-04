@@ -5,7 +5,7 @@ import { Table } from "react-bootstrap";
 // Records table used in Records page and High Scores page
 const RecordsTable = ({ user, records }) => {
   return (
-    <Card className="p-4 pb-1 mt-4">
+    <Card className="p-4 pb-1 mt-4 mb-5">
       {user ? (
         <Table borderless hover>
           <thead>

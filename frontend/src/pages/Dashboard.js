@@ -5,6 +5,28 @@ import { useTypewriter, Cursor } from "react-simple-typewriter";
 import { RecordsTable } from "../components";
 import { Col, Container, Row, Card } from "react-bootstrap";
 
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Line } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
 // Records page for logged in user to see their stats
 export default function Dashboard(props) {
   // Context data
@@ -18,7 +40,7 @@ export default function Dashboard(props) {
 
   // states for current stats and records
   let [stats, setStats] = useState({});
-  let [records, setRecords] = useState({});
+  let [records, setRecords] = useState([]);
 
   useEffect(() => {
     getStats(authTokens.access).then((data) => setStats(data));
@@ -36,17 +58,25 @@ export default function Dashboard(props) {
           <Cursor />
         </span>
       </h2>
+      <GamesChart records={records.slice(0, Math.min(10, records.length)).reverse()} />
       <h2>Average Stats Over The Last 10 Games</h2>
       <CurrentStats stats={stats} />
       <h2>Game History</h2>
-      <RecordsTable user={user} records={records} />
+      {records.length > 0 ? <RecordsTable user={user} records={records} /> :
+        <Card className="mt-4 mb-5">
+          <Card.Body>
+            <Card.Title className="text-center">
+              <h3>No Game History</h3>
+            </Card.Title>
+          </Card.Body>
+        </Card>
+      }
     </Container>
   );
 }
 
 // functional component to set up the current stats
 function CurrentStats({ stats }) {
-  console.log(stats);
   return (
     <Row className="mb-5">
       <Col>
@@ -59,8 +89,7 @@ function CurrentStats({ stats }) {
   );
 }
 
-// individual card component fo r a particular stat
-// TBC
+// individual card component for a particular stat
 function CardStats({ title, stat }) {
   return (
     <Card className="m-2 h-100">
@@ -76,5 +105,92 @@ function CardStats({ title, stat }) {
         </div>
       </Card.Body>
     </Card>
+  );
+}
+
+// line chart component for past ten games
+const chartOptions = {
+  responsive: true,
+  interaction: {
+    mode: 'index',
+    intersect: false,
+  },
+  stacked: false,
+  plugins: {
+    title: {
+      display: true,
+      text: 'Typing Speed and Accuracy Over the Last 10 Games',
+    },
+  },
+  scales: {
+    x: {
+      title: {
+        display: true,
+        text: 'Date (YYYY-MM-DD)'
+      }
+    },
+    y: {
+      type: 'linear',
+      display: true,
+      position: 'left',
+      title: {
+        display: true,
+        text: 'Typing Speed (WPM)'
+      }
+    },
+    y1: {
+      type: 'linear',
+      display: true,
+      position: 'right',
+      grid: {
+        drawOnChartArea: false,
+      },
+      title: {
+        display: true,
+        text: 'Typing Accuracy (%)'
+      }
+    },
+  },
+}
+
+function GamesChart({ records }) {
+  const data = {
+    labels: records.map((rec) => rec.created_at.slice(0, 10)),
+    datasets: [
+      {
+        label: 'Speed (WPM)',
+        data: records.map((rec) => rec.speed),
+        borderColor: 'rgb(255, 99, 132)',
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        yAxisID: 'y',
+      },
+      {
+        label: 'Accuracy (%)',
+        data: records.map((rec) => rec.accuracy),
+        borderColor: 'rgb(53, 162, 235)',
+        backgroundColor: 'rgba(53, 162, 235, 0.5)',
+        yAxisID: 'y1',
+      },
+    ],
+  };
+
+  return (
+    <>
+      {
+        records.length > 0 ?
+          <Card className="mb-5">
+            <Card.Body>
+              <Line options={chartOptions} data={data} />
+            </Card.Body>
+          </Card> :
+          <Card className="mt-4 mb-5">
+            <Card.Body>
+              <Card.Title className="text-center">
+                <h3>No Game History</h3>
+              </Card.Title>
+            </Card.Body>
+          </Card>
+      }
+    </>
   );
 }
