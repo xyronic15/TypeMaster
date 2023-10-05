@@ -3,6 +3,7 @@ import { getRecords } from "../utils";
 import { useTypewriter, Cursor } from 'react-simple-typewriter';
 import { Container } from "react-bootstrap";
 import { RecordsTable } from "../components";
+import { motion } from "framer-motion";
 
 // Page that shows the highest scores of each player
 const Leaderboard = (props) => {
@@ -23,17 +24,24 @@ const Leaderboard = (props) => {
 
   // return a table that formats the "records" value
   return (
-    <Container className="mt-5">
-      <h2>
-        <span>
-          {text}
-        </span>
-        <span>
-          <Cursor />
-        </span>
-      </h2>
-      <RecordsTable records={records} />
-    </Container>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1 }}
+    >
+      <Container className="mt-5">
+        <h2>
+          <span>
+            {text}
+          </span>
+          <span>
+            <Cursor />
+          </span>
+        </h2>
+        <RecordsTable records={records} />
+      </Container>
+    </motion.div>
   );
 }
 

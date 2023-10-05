@@ -14,6 +14,7 @@ import {
   Form,
   InputGroup,
 } from "react-bootstrap";
+import { motion } from "framer-motion";
 
 // Test page where users test their typing speed
 export default function Test(props) {
@@ -271,75 +272,83 @@ export default function Test(props) {
   }, [testState, secondsLeft, quote],);
 
   return (
-    <Container className="mt-5">
-      <h2 className="mb-4">
-        <span>
-          {text}
-        </span>
-        <span>
-          <Cursor />
-        </span>
-      </h2>
-      <Card>
-        <Card.Body>
-          {/* <QuoteDiv quote={quote} quoteArr={quoteArr} /> */}
-          <Row>
-            <div style={{ fontSize: "20px" }}>{quoteArr}</div>
-          </Row>
-        </Card.Body>
-      </Card>
-      <Row md={2} className="mt-3">
-        <Col md={4}>
-          <Card className="h-100">
-            <Card.Body>
-              <h3>
-                {quote.source ? quote.source : "Source unknown"}
-              </h3>
-              <p>Spoken by {quote.quotee}</p>
-              <p className="mb-0">
-                Themes:
-              </p>
-              <p className="text-capitalize">({quote.tags})</p>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={8}>
-          <Card className="h-100">
-            {result ? (
-              <ResultsDiv
-                speed={result.speed}
-                mins={result.mins}
-                secs={result.secs}
-                accuracy={result.accuracy}
-              />
-            ) : null}
-          </Card>
-        </Col>
-      </Row>
-      <hr />
-      <Card className="mb-3">
-        <Card.Body>
-          <Row>
-            <InputGroup>
-              <Form.Control
-                ref={textInput}
-                as="textarea"
-                aria-label="With textarea"
-                onChange={testState === "after" ? null : handleInput}
-                placeholder="Type here when you start..."
-                maxLength={quoteLength}
-                spellcheck="false"
-                id="test-area"
-                disabled={testState === "during" ? false : true}
-              />
-            </InputGroup>
-          </Row>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1 }}
+    >
+      <Container className="mt-5 mb-4">
+        <h2 className="mb-4">
+          <span>
+            {text}
+          </span>
+          <span>
+            <Cursor />
+          </span>
+        </h2>
+        <Card>
+          <Card.Body>
+            {/* <QuoteDiv quote={quote} quoteArr={quoteArr} /> */}
+            <Row>
+              <div style={{ fontSize: "20px" }}>{quoteArr}</div>
+            </Row>
+          </Card.Body>
+        </Card>
+        <Row md={2} className="mt-3">
+          <Col md={4}>
+            <Card className="h-100">
+              <Card.Body>
+                <h3>
+                  {quote.source ? quote.source : "Source unknown"}
+                </h3>
+                <p>Spoken by {quote.quotee}</p>
+                <p className="mb-0">
+                  Themes:
+                </p>
+                <p className="text-capitalize">({quote.tags})</p>
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col md={8}>
+            <Card className="h-100">
+              {result ? (
+                <ResultsDiv
+                  speed={result.speed}
+                  mins={result.mins}
+                  secs={result.secs}
+                  accuracy={result.accuracy}
+                />
+              ) : null}
+            </Card>
+          </Col>
+        </Row>
+        <hr />
+        <Card className="mb-3">
+          <Card.Body>
+            <Row>
+              <InputGroup>
+                <Form.Control
+                  ref={textInput}
+                  as="textarea"
+                  aria-label="With textarea"
+                  onChange={testState === "after" ? null : handleInput}
+                  placeholder="Type here when you start..."
+                  maxLength={quoteLength}
+                  spellcheck="false"
+                  id="test-area"
+                  disabled={testState === "during" ? false : true}
+                />
+              </InputGroup>
+            </Row>
 
 
-        </Card.Body>
-      </Card>
-      <TestButton state={testState} buttonClick={buttonClick} secondsLeft={secondsLeft} />
-    </Container>
+          </Card.Body>
+        </Card>
+        <TestButton state={testState} buttonClick={buttonClick} secondsLeft={secondsLeft} />
+      </Container>
+    </motion.div>
+
   );
 }
 

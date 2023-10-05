@@ -16,6 +16,7 @@ import {
   Legend,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
+import { motion } from "framer-motion";
 
 ChartJS.register(
   CategoryScale,
@@ -49,29 +50,37 @@ export default function Dashboard(props) {
 
   // return the formatted current stats and records table
   return (
-    <Container className="mt-5">
-      <h2 className="mb-4">
-        <span>
-          {text}
-        </span>
-        <span>
-          <Cursor />
-        </span>
-      </h2>
-      <GamesChart records={records.slice(0, Math.min(10, records.length)).reverse()} />
-      <h2>Average Stats Over The Last 10 Games</h2>
-      <CurrentStats stats={stats} />
-      <h2>Game History</h2>
-      {records.length > 0 ? <RecordsTable user={user} records={records} /> :
-        <Card className="mt-4 mb-5">
-          <Card.Body>
-            <Card.Title className="text-center">
-              <h3>No Game History</h3>
-            </Card.Title>
-          </Card.Body>
-        </Card>
-      }
-    </Container>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 2 }}
+    >
+      <Container className="mt-5">
+        <h2 className="mb-4">
+          <span>
+            {text}
+          </span>
+          <span>
+            <Cursor />
+          </span>
+        </h2>
+        <GamesChart records={records.slice(0, Math.min(10, records.length)).reverse()} />
+        <h2>Average Stats Over The Last 10 Games</h2>
+        <CurrentStats stats={stats} />
+        <h2>Game History</h2>
+        {records.length > 0 ? <RecordsTable user={user} records={records} /> :
+          <Card className="mt-4 mb-5">
+            <Card.Body>
+              <Card.Title className="text-center">
+                <h3>No Game History</h3>
+              </Card.Title>
+            </Card.Body>
+          </Card>
+        }
+      </Container>
+    </motion.div>
+
   );
 }
 

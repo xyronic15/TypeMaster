@@ -1,14 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-// import { API_URL } from "../constants";
 import { getQuote } from "../../utils";
-// import AuthContext from "../context/AuthContext";
 import { useTypewriter, Cursor } from 'react-simple-typewriter';
 import { Button } from '../../components'
 import "./Home.css"
 import { Container, Row, Col } from "react-bootstrap";
+import { motion } from "framer-motion"
 
 // Home page that acts as a landing page for the user
-// TBC
 export default function Home(props) {
 
   // typewriter text
@@ -36,7 +34,12 @@ export default function Home(props) {
   }, [])
 
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 2 }}
+    >
       <Container className="d-flex flex-column justify-content-center align-items-center"
         style={{
           height: "95vh",
@@ -71,7 +74,7 @@ export default function Home(props) {
             >Take a Test</Button>
           </Col>
           <Col className='d-grid justify-content-center'>
-            <Button href="/high-scores" className="my-1" style={{
+            <Button href="/leaderboard" className="my-1" style={{
               width: "200px"
             }}
             >Leaderboard</Button>
@@ -101,6 +104,6 @@ export default function Home(props) {
           </Row>
         </Container>
       </div>
-    </>
+    </motion.div>
   )
 }
