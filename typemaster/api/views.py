@@ -137,7 +137,7 @@ class GetAllRecords(generics.ListAPIView):
         if self.request.user.is_authenticated:
             query_set = Record.objects.filter(typer=self.request.user).order_by('-created_at')
         else:
-            query_set = Record.objects.raw("SELECT *, MAX(speed) FROM api_record GROUP BY typer_id")
+            query_set = Record.objects.raw("SELECT *, MAX(speed) FROM api_record GROUP BY typer_id ORDER BY -speed")
 
         return query_set
 
