@@ -112,7 +112,7 @@ export const AuthProvider = ({ children }) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ refresh: authTokens?.refresh }),
-    });
+    }).catch((e) => navigate("/not-available"));
 
     let data = await response.json();
 
